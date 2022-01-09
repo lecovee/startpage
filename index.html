@@ -8,7 +8,7 @@
   </head>
 
 
-  <body>
+  <body onload="onload()">
 	<div class="row">
   		<a class="icon" href="https://smile.amazon.de/-/en/gp/video/storefront/ref=atv_nb_free_to_me?language=en">
     			<img class="image" src="thumbnails/amazon.svg" alt="amazon" style="width:100%">
@@ -57,8 +57,15 @@
 	var usageDesktop = "desktop";
 
 	//main
-	adjustForUse(getUsage());
-	updateTagesschauLink(checkGoogleApiKeySet());
+	usage = getUsage();
+	adjustForUse(usage);
+
+	function onload(){
+		// anscheinend geht $ nicht direkt aber über onload gehts
+		// google api key exceeds mögliche lösung check nur höchsten x mal am tag und save last youtube id als cookie
+		googleApiKey = checkGoogleApiKeySet();
+		updateTagesschauLink(googleApiKey);
+	}
 
 	function getUsage(){
 		usage = getCookie(usageCookieName);
@@ -117,12 +124,12 @@
 		var searchQuery = 
 		$.get("https://www.googleapis.com/youtube/v3/search?part=snippet&q="+getTagesschauQuery()+"&key="+googleApiKey,function(data){
 			var responseString = JSON.stringify(data);
-			var videoId = responseString.substring(responseString.indexOf("videoId")+10,responseString.indexOf("videoId")+21);
+			alert(responseString.indexOf("videoId"));
+			alert(videoIdPosition);
+			var videoId = responseString.substring(videoIdPosition+10,videoIdPosition+21);
 	  		var link = "https://www.youtube.com/watch?v="+videoId
-			if (videoId.length===11){
-				setTagesschauLink(link);
-				setTagesschauImageReady();
-			}
+			setTagesschauLink(link);
+			setTagesschauImageReady();
 		});
 	}
 	function checkGoogleApiKeySet() {
