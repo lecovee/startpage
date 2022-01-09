@@ -8,8 +8,8 @@
   </head>
 
 
-  <body >
-	<div  class="row">
+  <body onload="checkGoogleApiKeySet()">
+	<div class="row">
   		<a class="icon" href="https://smile.amazon.de/-/en/gp/video/storefront/ref=atv_nb_free_to_me?language=en">
     			<img class="actualbild" src="thumbnails/amazon.svg" alt="amazon" style="width:100%">
   		</a>
@@ -29,7 +29,7 @@
 		-->
 		
 		
-		<a class="icon" href="https://www.youtube.com/embed/videoseries?index=0&amp;list=PL4A2F331EE86DCC22">
+		<a class="icon" id="tagesschau" onload="updateTagesschauLink()" href="https://www.youtube.com/embed/videoseries?index=0&amp;list=PL4A2F331EE86DCC22">
     			<img class="actualbild" src="thumbnails/tagesschau.svg" alt="tagesschau" style="width:100%">
   		</a>
 	
@@ -52,5 +52,67 @@
   		</a>
 	</div>
   </body>
-
+  <script>
+  	function setTagesschauLink(link){
+  		var tagesschauIcon = document.getElementById("tagesschau");
+  		tagesschauIcon.setAttribute("href",link);
+  	}
+  	function getTagesschauQuery(){
+  		var date = new Date();
+  		date.setDate(date.getDate()-1); 
+  		var dateString = getTwoDigitsValue(date.getDate())+"."+getTwoDigitsValue(date.getMonth()+1)+"."+date.getFullYear();
+  		return "tagesschau+20:00+uhr+\""+dateString+"\"";
+  	}
+  	function getTwoDigitsValue(value){
+  		if (value < 10){
+  			answer = "0"+value;
+  		} else {
+  			answer = value;
+  		}
+  		return answer;	
+  	}
+	function updateTagesschauLink(googleApiKey) {
+		var searchQuery = 
+		$.get("https://www.googleapis.com/youtube/v3/search?part=snippet&q="+getTagesschauQuery()+"&key="+googleApiKey,function(data){
+			var responseString = JSON.stringify(data);
+			var videoId = responseString.substring(responseString.indexOf("videoId")+10,responseString.indexOf("videoId")+21);
+			//alert(videoId);
+	  		var tagesschauIcon = document.getElementById("tagesschau");
+	  		var link = "https://www.youtube.com/watch?v="+videoId
+	  		tagesschauIcon.setAttribute("href",link);
+		});
+	}
+	function checkGoogleApiKeySet() {
+		googleApiKey = getCookie("googleApiKey")
+		alert(googleApiKey)
+		if (googleApiKey.length > 0) {
+			updateTagesschauLink(googleApiKey)
+		}
+		else {
+			let googleApiKey = prompt("enter my google api");
+			document.cookie = "googleApiKey=" + googleApiKey + " path=/;"
+			document.cookie = "googleApiKey="+googleApiKey+";";
+			alert(googleApiKey)
+			updateTagesschauLink(googleApiKey)
+		}
+	}
+	function getCookie(cname) {
+		// from https://www.w3schools.com/js/js_cookies.asp
+		let name = cname + "=";
+		let decodedCookie = decodeURIComponent(document.cookie);
+		let ca = decodedCookie.split(';');
+		for(let i = 0; i <ca.length; i++) {
+			let c = ca[i];
+			while (c.charAt(0) == ' ') {
+				c = c.substring(1);
+			}
+			if (c.indexOf(name) == 0) {
+				return c.substring(name.length, c.length);
+			}
+		}
+		return "";
+	}
+  </script>
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+</body>
 </html>
