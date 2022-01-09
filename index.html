@@ -8,7 +8,7 @@
   </head>
 
 
-  <body onload="checkGoogleApiKeySet()">
+  <body onload="onloadBody()">
 	<div class="row">
   		<a class="icon" href="https://smile.amazon.de/-/en/gp/video/storefront/ref=atv_nb_free_to_me?language=en">
     			<img class="image" src="thumbnails/amazon.svg" alt="amazon" style="width:100%">
@@ -40,13 +40,54 @@
   		</a>
 		-->
 		
+  		<a class="icon" id="whatsapp" href="https://web.whatsapp.com">
+    			<img class="image" src="thumbnails/whatsapp.svg" alt="whatsapp" style="width:100%">
+  		</a>
 		
-  		<a class="icon" href="https://www.zdf.de/comedy/zdf-magazin-royale">
+  		<a class="icon" id="alternative" href="https://www.zdf.de/comedy/zdf-magazin-royale">
     			<img class="image" src="thumbnails/zdf_magazin.svg" alt="zdf magazin" style="width:100%">
   		</a>
 	</div>
   </body>
   <script>
+	var googleApiKeyCookieName = "googleApiKey";
+	var usageCookieName = "usage";
+	var usageMedia = "media";
+	var usageDesktop = "desktop";
+	function onloadBody(){
+		adjustForUse(getUsage());
+		updateTagesschauLink(checkGoogleApiKeySet());
+	}
+	function getUsage(){
+		usage = getCookie(usageCookieName);
+		if (usage.length===0) {
+			if (confirm("usage mainly as media (instead of desktop)")) {
+				usage = usageMedia;
+			}
+			else {
+				usage = usageDesktop;
+			}
+			setCookie(usageCookieName, usage);
+		}
+		return usage;
+		
+	}
+	function adjustForUse(usage){
+		if(usage===usageMedia){
+			removeElement("whatsapp");
+			return;
+		}
+		else if (usage === usageDesktop){
+			removeElement("alternative");
+			return;
+		}
+		else {
+			alert("hi");
+		}				
+	}
+	function removeElement(id) {
+		document.getElementById(id).outerHTML = "";
+	}
   	function setTagesschauLink(link){
   		var tagesschauIcon = document.getElementById("tagesschau");
   		tagesschauIcon.setAttribute("href",link);
@@ -83,15 +124,15 @@
 		});
 	}
 	function checkGoogleApiKeySet() {
-		googleApiKey = getCookie("googleApiKey");
-		if (googleApiKey.length > 0) {
-			updateTagesschauLink(googleApiKey);
+		let googleApiKey = getCookie(googleApiKeyCookieName);
+		if (googleApiKey.length === 0) {
+			googleApiKey = prompt("enter my google api");
+			setCookie(googleApiKeyCookieName, googleApiKey);
 		}
-		else {
-			let googleApiKey = prompt("enter my google api");
-			document.cookie = "googleApiKey="+googleApiKey+";";
-			updateTagesschauLink(googleApiKey);
-		}
+		return googleApiKey;
+	}
+	function setCookie(cookieName, cookieValue) {
+		document.cookie = cookieName + "="+cookieValue+";";
 	}
 	function getCookie(cname) {
 		// from https://www.w3schools.com/js/js_cookies.asp
