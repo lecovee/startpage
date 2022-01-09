@@ -10,10 +10,6 @@
 
   <body onload="checkGoogleApiKeySet()">
 	<div class="row">
-		
-		<!--
-			test 1
-		-->
   		<a class="icon" href="https://smile.amazon.de/-/en/gp/video/storefront/ref=atv_nb_free_to_me?language=en">
     			<img class="actualbild" src="thumbnails/amazon.svg" alt="amazon" style="width:100%">
   		</a>
@@ -33,8 +29,8 @@
 		-->
 		
 		
-		<a class="icon" id="tagesschau" onload="updateTagesschauLink()" href="https://www.youtube.com/embed/videoseries?index=0&amp;list=PL4A2F331EE86DCC22">
-    			<img class="actualbild" src="thumbnails/tagesschau.svg" alt="tagesschau" style="width:100%">
+		<a class="icon" id="tagesschau" href="https://www.youtube.com/embed/videoseries?index=0&amp;list=PL4A2F331EE86DCC22">
+    			<img class="actualbild" id="tagesschauIcon" src="thumbnails/tagesschau.svg" alt="tagesschau" style="width:100%">
   		</a>
 	
 
@@ -61,6 +57,11 @@
   		var tagesschauIcon = document.getElementById("tagesschau");
   		tagesschauIcon.setAttribute("href",link);
   	}
+	function setTagesschauIconReady(){
+		$(document).ready(function() {
+			document.getElementById("tagesschauIcon").src = "thumbnails/zdf_magazin.svg";
+		});
+	}
   	function getTagesschauQuery(){
   		var date = new Date();
   		date.setDate(date.getDate()-1); 
@@ -80,24 +81,25 @@
 		$.get("https://www.googleapis.com/youtube/v3/search?part=snippet&q="+getTagesschauQuery()+"&key="+googleApiKey,function(data){
 			var responseString = JSON.stringify(data);
 			var videoId = responseString.substring(responseString.indexOf("videoId")+10,responseString.indexOf("videoId")+21);
-			//alert(videoId);
-	  		var tagesschauIcon = document.getElementById("tagesschau");
+
 	  		var link = "https://www.youtube.com/watch?v="+videoId
-	  		tagesschauIcon.setAttribute("href",link);
+			if (videoId.length===11){
+				setTagesschauLink(link);
+				setTagesschauIconReady();
+			}
 		});
 	}
 	function checkGoogleApiKeySet() {
-		googleApiKey = getCookie("googleApiKey")
-		alert(googleApiKey)
+		
+		googleApiKey = getCookie("googleApiKey");
+		alert(googleApiKey);
 		if (googleApiKey.length > 0) {
-			updateTagesschauLink(googleApiKey)
+			updateTagesschauLink(googleApiKey);
 		}
 		else {
 			let googleApiKey = prompt("enter my google api");
-			document.cookie = "googleApiKey=" + googleApiKey + " path=/;"
 			document.cookie = "googleApiKey="+googleApiKey+";";
-			alert(googleApiKey)
-			updateTagesschauLink(googleApiKey)
+			updateTagesschauLink(googleApiKey);
 		}
 	}
 	function getCookie(cname) {
