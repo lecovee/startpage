@@ -19,13 +19,13 @@ html{
   opacity: 50;
 }
 
-.actualbild {
+.image {
   border-radius: 2.5%;
   opacity: 0.25;
   transition: opacity ease 1s;
 }
 
-.actualbild:hover {
+.image:hover {
   opacity: 1;
   transition: opacity ease 0.2s;
 }
