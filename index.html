@@ -57,28 +57,26 @@
 	var usageDesktop = "desktop";
 
 	//main
-	usage = getUsage();
-	adjustForUse(usage);
+	adjustForUse(getUsage());
 
 	function onload(){
 		// anscheinend geht $ nicht direkt aber über onload gehts
 		// google api key exceeds mögliche lösung check nur höchsten x mal am tag und save last youtube id als cookie
-		googleApiKey = checkGoogleApiKeySet();
-		updateTagesschauLink(googleApiKey);
+		updateTagesschauLink(checkGoogleApiKeySet());
 	}
 
 	function getUsage(){
-		usage = getCookie(usageCookieName);
-		if (usage.length===0) {
+		thisUsage = getCookie(usageCookieName);
+		if (thisUsage.length===0) {
 			if (confirm("usage mainly as media (instead of desktop)")) {
-				usage = usageMedia;
+				thisUsage = usageMedia;
 			}
 			else {
-				usage = usageDesktop;
+				thisUsage = usageDesktop;
 			}
-			setCookie(usageCookieName, usage);
+			setCookie(usageCookieName, thisUsage);
 		}
-		return usage;
+		return thisUsage;
 		
 	}
 	function adjustForUse(usage){
@@ -98,7 +96,7 @@
 		document.getElementById(id).outerHTML = "";
 	}
   	function setTagesschauLink(link){
-  		var tagesschauIcon = document.getElementById("tagesschau");
+  		let tagesschauIcon = document.getElementById("tagesschau");
   		tagesschauIcon.setAttribute("href",link);
   	}
 	function setTagesschauImageReady(){
@@ -107,9 +105,9 @@
 		});
 	}
   	function getTagesschauQuery(){
-  		var date = new Date();
+  		let date = new Date();
   		date.setDate(date.getDate()-1); 
-  		var dateString = getTwoDigitsValue(date.getDate())+"."+getTwoDigitsValue(date.getMonth()+1)+"."+date.getFullYear();
+  		let dateString = getTwoDigitsValue(date.getDate())+"."+getTwoDigitsValue(date.getMonth()+1)+"."+date.getFullYear();
   		return "tagesschau+20:00+uhr+\""+dateString+"\"";
   	}
   	function getTwoDigitsValue(value){
@@ -120,14 +118,14 @@
   		}
   		return answer;	
   	}
-	function updateTagesschauLink(googleApiKey) {
-		var searchQuery = 
-		$.get("https://www.googleapis.com/youtube/v3/search?part=snippet&q="+getTagesschauQuery()+"&key="+googleApiKey,function(data){
-			var responseString = JSON.stringify(data);
+	function updateTagesschauLink(thisGoogleApiKey) {
+		let searchQuery = 
+		$.get("https://www.googleapis.com/youtube/v3/search?part=snippet&q="+getTagesschauQuery()+"&key="+thisGoogleApiKey,function(data){
+			let responseString = JSON.stringify(data);
 			alert(responseString.indexOf("videoId"));
 			alert(videoIdPosition);
-			var videoId = responseString.substring(videoIdPosition+10,videoIdPosition+21);
-	  		var link = "https://www.youtube.com/watch?v="+videoId
+			let videoId = responseString.substring(videoIdPosition+10,videoIdPosition+21);
+	  		let link = "https://www.youtube.com/watch?v="+videoId
 			setTagesschauLink(link);
 			setTagesschauImageReady();
 		});
