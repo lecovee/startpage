@@ -122,8 +122,7 @@
 		let searchQuery = 
 		$.get("https://www.googleapis.com/youtube/v3/search?part=snippet&q="+getTagesschauQuery()+"&key="+thisGoogleApiKey,function(data){
 			let responseString = JSON.stringify(data);
-			alert(responseString.indexOf("videoId"));
-			alert(videoIdPosition);
+			let videoIdPosition = responseString.indexOf("videoId");
 			let videoId = responseString.substring(videoIdPosition+10,videoIdPosition+21);
 	  		let link = "https://www.youtube.com/watch?v="+videoId
 			setTagesschauLink(link);
