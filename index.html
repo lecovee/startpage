@@ -53,8 +53,11 @@
 	//constants
 	var googleApiKeyCookieName = "googleApiKey";
 	var usageCookieName = "usage";
+	var lastYoutubeCheckCookieName = "lastYoutubeCheckTime";
 	var usageMedia = "media";
 	var usageDesktop = "desktop";
+	var youtubeCheckTimeOut = 60; //in min
+
 
 	//main
 	adjustForUse(getUsage());
@@ -62,7 +65,22 @@
 	function onload(){
 		// anscheinend geht $ nicht direkt aber über onload gehts
 		// google api key exceeds mögliche lösung check nur höchsten x mal am tag und save last youtube id als cookie
-		updateTagesschauLink(checkGoogleApiKeySet());
+		
+		let googleApiKey = checkGoogleApiKeySet();
+		let lastYoutubeCheckTime = getCookie(lastYoutubeCheckCookieName);
+		let now = new Date().getTime();
+		if (lastYoutubeCheckTime.length === 0){
+			// cookie not set -> update
+			setCookie(lastYoutubeCheckCookieName,now);
+			updateTagesschauLink(googleApiKey);			
+		}
+		else {
+			if (lastYoutubeCheckTime < now - youtubeCheckTimeOut*60*1000) {
+				// last youtube check was longer then youtubeCheckTimeOut min ago
+				setCookie(lastYoutubeCheckCookieName,now);
+				updateTagesschauLink(googleApiKey);				
+			}
+		}		
 	}
 
 	function getUsage(){
@@ -106,8 +124,7 @@
 		});
 	}
   	function getTagesschauQuery(){
-  		let date = new Date();
-  		date.setDate(date.getDate()-1); 
+  		date.setDate(new Date().getDate()-1); 
   		let dateString = getTwoDigitsValue(date.getDate())+"."+getTwoDigitsValue(date.getMonth()+1)+"."+date.getFullYear();
   		return "tagesschau+20:00+uhr+\""+dateString+"\"";
   	}
