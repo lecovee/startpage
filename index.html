@@ -10,7 +10,7 @@
 
   <body onload="onload()">
 	<div class="row">
-  		<a class="icon" href="https://smile.amazon.de/-/en/gp/video/storefront/ref=atv_nb_free_to_me?language=en">
+  		<a class="icon" id="amazon" href="https://smile.amazon.de/-/en/gp/video/storefront/ref=atv_nb_free_to_me?language=en">
     			<img class="image" src="thumbnails/amazon.svg" alt="amazon" style="width:100%">
   		</a>
 
@@ -81,11 +81,12 @@
 	}
 	function adjustForUse(usage){
 		if(usage===usageMedia){
-			removeElement("whatsapp");
+			removeElement("whatsapp");			
 			return;
 		}
 		else if (usage === usageDesktop){
 			removeElement("alternative");
+			document.getElementById("amazon").setAttribute("href","https://smile.amazon.de/");
 			return;
 		}
 		else {
