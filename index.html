@@ -147,7 +147,7 @@
 		searchlink = searchlink + "&q="+getTagesschauQuery();			// tagesschau 20:00 uhr 02.07.1993
 		searchlink = searchlink + "&channelId=UC5NOEUbkLheQcaaRldYW5GA";	// channel tagesschau
 		searchlink = searchlink + "&key="+thisGoogleApiKey;			// youtube api key
-		
+		console.log("searchlink = " + searchlink)
 		let searchQuery = 
 		$.get(searchlink,function(data){
 			let responseString = JSON.stringify(data);
