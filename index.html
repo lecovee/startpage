@@ -132,7 +132,7 @@
   		let date = new Date();
   		date.setDate(date.getDate()-1); 
   		let dateString = getTwoDigitsValue(date.getDate())+"."+getTwoDigitsValue(date.getMonth()+1)+"."+date.getFullYear();
-  		return "tagesschau+20:00+uhr+\""+dateString+"\"";
+  		return "tagesschau+20:00+uhr+"+dateString;
   	}
   	function getTwoDigitsValue(value){
   		if (value < 10){
@@ -143,8 +143,13 @@
   		return answer;	
   	}
 	function updateTagesschauLink(thisGoogleApiKey, timeNow) {
+		let searchlink = "https://www.googleapis.com/youtube/v3/search?part=snippet";
+		searchlink = searchlink + "&q="+getTagesschauQuery();			// tagesschau 20:00 uhr 02.07.1993
+		searchlink = searchlink + "&channelId=UC5NOEUbkLheQcaaRldYW5GA";	// channel tagesschau
+		searchlink = searchlink + "&key="+thisGoogleApiKey;			// youtube api key
+		
 		let searchQuery = 
-		$.get("https://www.googleapis.com/youtube/v3/search?part=snippet&q="+getTagesschauQuery()+"&key="+thisGoogleApiKey,function(data){
+		$.get(searchlink,function(data){
 			let responseString = JSON.stringify(data);
 			let videoIdPosition = responseString.indexOf("videoId");
 			let videoId = responseString.substring(videoIdPosition+10,videoIdPosition+21);
