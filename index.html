@@ -132,7 +132,7 @@
   		let date = new Date();
   		date.setDate(date.getDate()-1); 
   		let dateString = getTwoDigitsValue(date.getDate())+"."+getTwoDigitsValue(date.getMonth()+1)+"."+date.getFullYear();
-  		return "tagesschau+20:00+uhr+"+dateString;
+  		return "tagesschau+20:00+uhr+"+"\""+dateString+"\"";
   	}
   	function getTwoDigitsValue(value){
   		if (value < 10){
