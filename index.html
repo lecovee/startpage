@@ -60,13 +60,27 @@
 	//variables
 	var usageMedia = "media";
 	var usageDesktop = "desktop";
-	var youtubeCheckTimeOut = 60; //in min
+	var youtubeCheckTimeOut = 60; // in min
 
 
 	//main
 	adjustForUse(getUsage());
 
 	function onload(){
+		tagesschauMain();
+		
+		// refresh page after some time
+		refreshTime = 127		// in min
+		setTimeout(refreshPage, refreshTime*60*1000);
+		
+	}
+
+	function refreshPage(){
+		location.reload();
+	}
+
+	function tagesschauMain(){
+		// main function to do the tagesschau stuff
 		// anscheinend geht $ nicht direkt aber über onload gehts
 		// google api key exceeds mögliche lösung check nur höchsten x mal am tag und save last youtube id als cookie
 		
@@ -85,7 +99,7 @@
 			else {
 				setTagesschauLink(getCookie(tagesschauLinkCookieName));
 			}
-		}		
+		}	
 	}
 
 	function getUsage(){
