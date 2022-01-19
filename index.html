@@ -62,11 +62,29 @@
 	var usageDesktop = "desktop";
 	var youtubeCheckTimeOut = 60; // in min
 
+	//detect firefox
+	if(navigator.userAgent.toLowerCase().indexOf('firefox') > -1){
+     		// firefox macht probleme
+		// wenn ich die site als new tab habe und cookies beim beenden lösche dann löscht es auch die cookies von dieser site
+		// auch wenn sie eigentlich als exceptions drin steht
+		// blöde lösung -> firefox macht nix mit cookies und hat nur standard ansicht
+		return;
+	}
 
 	//main
 	adjustForUse(getUsage());
 
 	function onload(){
+		
+		//detect firefox
+		if(navigator.userAgent.toLowerCase().indexOf('firefox') > -1){
+			// firefox macht probleme
+			// wenn ich die site als new tab habe und cookies beim beenden lösche dann löscht es auch die cookies von dieser site
+			// auch wenn sie eigentlich als exceptions drin steht
+			// blöde lösung -> firefox macht nix mit cookies und hat nur standard ansicht
+			return;
+		}
+		
 		tagesschauMain();
 		
 		// refresh page after some time
