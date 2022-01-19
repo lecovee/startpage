@@ -68,7 +68,7 @@
 		// wenn ich die site als new tab habe und cookies beim beenden lösche dann löscht es auch die cookies von dieser site
 		// auch wenn sie eigentlich als exceptions drin steht
 		// blöde lösung -> firefox macht nix mit cookies und hat nur standard ansicht
-		return false;
+		throw new Error("firefox kann new tab cookies nicht exceptionieren also macht firefox nix mit cookies");
 	}
 
 	//main
@@ -82,7 +82,7 @@
 			// wenn ich die site als new tab habe und cookies beim beenden lösche dann löscht es auch die cookies von dieser site
 			// auch wenn sie eigentlich als exceptions drin steht
 			// blöde lösung -> firefox macht nix mit cookies und hat nur standard ansicht
-			return false;
+			throw new Error("firefox kann new tab cookies nicht exceptionieren also macht firefox nix mit cookies");
 		}
 		
 		tagesschauMain();
