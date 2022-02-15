@@ -146,25 +146,16 @@
 
 	function adjustForUse(usage){
 		if (usage != usageMedia && usage != usageDesktop){
-			usage = usageDefault;
-			console.warn('usage default');
-			
+			usage = usageDefault;			
 		}
-		
-			
-			console.warn('usage');
-			
-			console.warn(usage);
 		
 		if(usage == usageMedia){
 			removeElement("whatsapp");	
-			console.warn('usage media');		
 			return;
 		}
+		
 		if (usage == usageDesktop){
 			removeElement("alternative");
-			
-			console.warn('usage desktop');
 			document.getElementById("amazon").setAttribute("href","https://smile.amazon.de/");
 			return;
 		}			
