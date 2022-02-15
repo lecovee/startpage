@@ -82,11 +82,11 @@
 
 	//main
 	
-	usage = getCookie(usageCookieName);
-	if (usage == usageDesktop){
+	let usage = getCookie(usageCookieName);
+	if (usage === usageDesktop){
         adjustForUse(usage);
 	}
-	else if (usage == usageMedia){
+	else if (usage === usageMedia){
         adjustForUse(usage);
 	}
 	else {
@@ -102,10 +102,10 @@
 	
 	
         usageInput = prompt("enter usage\n"+usageDesktop+"=desktop\n"+usageMedia+"=media\nelse="+usageDefault,getCookie(usageCookieName));
-		if (usageInput == usageDesktop) {
+		if (usageInput === usageDesktop) {
 			thisUsage = usageDesktop;
 		}
-		else if (usageInput == usageMedia){
+		else if (usageInput === usageMedia){
 			thisUsage = usageMedia;
 		}
 		else {
