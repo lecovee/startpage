@@ -166,11 +166,11 @@
 		if(usage.length===0){
 			usage = usageDefault;
 		}
-		if(usage===usageMedia){
+		if(usage == usageMedia){
 			removeElement("whatsapp");			
 			return;
 		}
-		else if (usage === usageDesktop){
+		else if (usage == usageDesktop){
 			removeElement("alternative");
 			document.getElementById("amazon").setAttribute("href","https://smile.amazon.de/");
 			return;
