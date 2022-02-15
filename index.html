@@ -154,14 +154,11 @@
 			removeElement("whatsapp");			
 			return;
 		}
-		else if (usage == usageDesktop){
+		if (usage == usageDesktop){
 			removeElement("alternative");
 			document.getElementById("amazon").setAttribute("href","https://smile.amazon.de/");
 			return;
-		}
-		else {
-			adjustForUse(usageDefault);
-		}				
+		}			
 	}
 	function removeElement(id) {
 		document.getElementById(id).outerHTML = "";
