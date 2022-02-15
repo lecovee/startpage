@@ -146,6 +146,10 @@
 	}
 
 	function adjustForUse(usage){
+		if (usage != usageMedia && usage != usageDesktop){
+			usage = usageDefault;
+		}
+		
 		if(usage == usageMedia){
 			removeElement("whatsapp");			
 			return;
