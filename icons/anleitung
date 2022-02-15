@@ -1,3 +1,0 @@
-https://graphicdesign.stackexchange.com/a/102010
-  sudo apt-get install imagemagick
-  convert -density 384 icon.svg -define icon:auto-resize icon.ico
