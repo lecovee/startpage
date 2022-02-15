@@ -82,16 +82,8 @@
 
 	//main
 	
-	let usage = getCookie(usageCookieName);
-	if (usage === usageDesktop){
-        adjustForUse(usage);
-	}
-	else if (usage === usageMedia){
-        adjustForUse(usage);
-	}
-	else {
-        adjustForUse(usageDefault);
-	}
+        adjustForUse(getCookie(usageCookieName));
+	
 	
 
 	function onClickSettingsButton(){
@@ -101,17 +93,8 @@
 	function openSettingsInputs(){
 	
 	
-        usageInput = prompt("enter usage\n"+usageDesktop+"=desktop\n"+usageMedia+"=media\nelse="+usageDefault,getCookie(usageCookieName));
-		if (usageInput === usageDesktop) {
-			thisUsage = usageDesktop;
-		}
-		else if (usageInput === usageMedia){
-			thisUsage = usageMedia;
-		}
-		else {
-            thisUsage = usageDefault;
-		}
-		setCookie(usageCookieName, thisUsage);
+        var usageInput = prompt("enter usage\n"+usageDesktop+"=desktop\n"+usageMedia+"=media\nelse="+usageDefault,getCookie(usageCookieName));
+		setCookie(usageCookieName, usageInput);
 		
 		googleApiKey = prompt("enter my google api", getCookie(googleApiKeyCookieName));
 		if (googleApiKey.length != 0){
@@ -163,9 +146,6 @@
 	}
 
 	function adjustForUse(usage){
-		if(usage.length===0){
-			usage = usageDefault;
-		}
 		if(usage == usageMedia){
 			removeElement("whatsapp");			
 			return;
@@ -176,7 +156,7 @@
 			return;
 		}
 		else {
-			alert("hi");
+			adjustForUse(usageDefault);
 		}				
 	}
 	function removeElement(id) {
