@@ -83,7 +83,10 @@
 	//main
 	
 	usage = getCookie(usageCookieName);
-	if (usage != 0){
+	if (usage === usageDesktop){
+        adjustForUse(usage);
+	}
+	else if (usage === usageMedia){
         adjustForUse(usage);
 	}
 	else {
