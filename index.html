@@ -98,7 +98,7 @@
 	function openSettingsInputs(){
 	
 	
-        usageInput = prompt("enter usage\n0=desktop\n1=media\nelse="+usageDefault,getCookie(usageCookieName));
+        usageInput = prompt("enter usage\n"+usageDesktop+"=desktop\n"+usageMedia"+=media\nelse="+usageDefault,getCookie(usageCookieName));
 		if (usageInput == usageDesktop) {
 			thisUsage = usageDesktop;
 		}
