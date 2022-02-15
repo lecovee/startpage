@@ -50,9 +50,7 @@
   		</a>
 	</div>
     
-    <div class="bottomRightIcon" onclick="onClickSettingsButton()">
-		<img src="buttons/settings_gray_24dp.svg"  >
-	</div>
+    <img class="bottomRightIcon" onclick="onClickSettingsButton()" src="buttons/settings_gray_24dp.svg">
 
   </body>
   <script>
@@ -87,6 +85,9 @@
 	usage = getCookie(usageCookieName);
 	if (usage != 0){
         adjustForUse(usage);
+	}
+	else {
+        adjustForUse(usageDefault);
 	}
 	
 
