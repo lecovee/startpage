@@ -123,8 +123,9 @@
 			throw new Error("firefox kann new tab cookies nicht exceptionieren also macht firefox nix mit cookies");
 		}
 		
-		if (getCookie(googleApiKeyCookieName).length != 0){
-            tagesschauMain();
+		googleApiKey = getCookie(googleApiKeyCookieName)
+		if (googleApiKey.length != 0){
+            tagesschauMain(googleApiKey);
 		}
 		
 		
@@ -137,7 +138,7 @@
 		location.reload();
 	}
 
-	function tagesschauMain(){
+	function tagesschauMain(googleApiKey){
 		// main function to do the tagesschau stuff
 		// anscheinend geht $ nicht direkt aber über onload gehts
 		// google api key exceeds mögliche lösung check nur höchsten x mal am tag und save last youtube id als cookie
