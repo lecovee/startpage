@@ -49,6 +49,9 @@
     			<img class="image" src="thumbnails/zdf_magazin.svg" alt="zdf magazin" style="width:100%">
   		</a>
 	</div>
+    
+    <div class="bottomRightIcon" onclick="onClickSettingsButton()"></div>
+
   </body>
   <script>
 	// --- constants ---
@@ -61,7 +64,11 @@
 	//variables
 	var usageMedia = "media";
 	var usageDesktop = "desktop";
+	var usageDefault = usageDesktop;
 	var youtubeCheckTimeOut = 60; // in min
+	var refreshTime = 127;		// in min
+
+	var anyCookieSet = 0;
 
 	//detect firefox
 	if(navigator.userAgent.toLowerCase().indexOf('firefox') > -1){
@@ -74,8 +81,33 @@
 	}
 
 	//main
-	adjustForUse(getUsage());
+	
+	adjustForUse(getCookie(usageCookieName));
 
+	function onClickSettingsButton(){
+        openSettingsInputs();
+	}
+	
+	function openSettingsInputs(){
+        usageInt = prompt("enter usage\n0=desktop\n1=media\n-1=default",-1);
+		if (usageInt == 0) {
+			thisUsage = usageDesktop;
+		}
+		else if (usageInt == 1){
+			thisUsage = usageMedia;
+		}
+		else {
+            thisUsage = usageDefault;
+		}
+		setCookie(usageCookieName, thisUsage);
+		
+		googleApiKey = prompt("enter my google api", getCookie(googleApiKeyCookieName));
+		setCookie(googleApiKeyCookieName, googleApiKey);
+		
+		
+		refreshPage();
+	}	
+	
 	function onload(){
 		
 		//detect firefox
@@ -87,10 +119,12 @@
 			throw new Error("firefox kann new tab cookies nicht exceptionieren also macht firefox nix mit cookies");
 		}
 		
-		tagesschauMain();
+		if (getCookie(googleApiKeyCookieName).length != 0){
+            tagesschauMain();
+		}
+		
 		
 		// refresh page after some time
-		refreshTime = 127		// in min
 		setTimeout(refreshPage, refreshTime*60*1000);
 		
 	}
@@ -104,7 +138,6 @@
 		// anscheinend geht $ nicht direkt aber über onload gehts
 		// google api key exceeds mögliche lösung check nur höchsten x mal am tag und save last youtube id als cookie
 		
-		let googleApiKey = checkGoogleApiKeySet();
 		let tagesschauUpdateTime = getCookie(tagesschauUpdatedTimeCookieName);
 		let now = new Date().getTime();
 		if (tagesschauUpdateTime.length === 0){
@@ -113,7 +146,7 @@
 		}
 		else {
 			if (tagesschauUpdateTime < now - youtubeCheckTimeOut*60*1000) {
-				// last youtube check was longer then youtubeCheckTimeOut min ago
+				// last youtube check was longer then youtubeCheckTimeOut min ago -> update
 				updateTagesschauLink(googleApiKey, now);				
 			}
 			else {
@@ -122,21 +155,10 @@
 		}	
 	}
 
-	function getUsage(){
-		thisUsage = getCookie(usageCookieName);
-		if (thisUsage.length===0) {
-			if (confirm("usage mainly as media (instead of desktop)")) {
-				thisUsage = usageMedia;
-			}
-			else {
-				thisUsage = usageDesktop;
-			}
-			setCookie(usageCookieName, thisUsage);
-		}
-		return thisUsage;
-		
-	}
 	function adjustForUse(usage){
+		if(usage.length===0){
+			usage = usageDefault;
+		}
 		if(usage===usageMedia){
 			removeElement("whatsapp");			
 			return;
@@ -174,9 +196,12 @@
   		} else {
   			answer = value;
   		}
-  		return answer;	
+  		return answer;
   	}
 	function updateTagesschauLink(thisGoogleApiKey, timeNow) {
+        if (thisGoogleApiKey.lenth===0){
+            return;
+        }
 		let searchlink = "https://www.googleapis.com/youtube/v3/search?part=snippet";
 		searchlink = searchlink + "&q="+getTagesschauQuery();			// tagesschau 20:00 uhr 02.07.1993
 		searchlink = searchlink + "&channelId=UC5NOEUbkLheQcaaRldYW5GA";	// channel tagesschau
@@ -193,14 +218,6 @@
 			setCookie(tagesschauUpdatedTimeCookieName, timeNow);
 			setCookie(tagesschauLinkCookieName, link);
 		});
-	}
-	function checkGoogleApiKeySet() {
-		let googleApiKey = getCookie(googleApiKeyCookieName);
-		if (googleApiKey.length === 0) {
-			googleApiKey = prompt("enter my google api");
-			setCookie(googleApiKeyCookieName, googleApiKey);
-		}
-		return googleApiKey;
 	}
 	function setCookie(cookieName, cookieValue) {
 		document.cookie = cookieName + "="+cookieValue+";";
