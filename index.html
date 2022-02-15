@@ -109,7 +109,10 @@
 		setCookie(usageCookieName, thisUsage);
 		
 		googleApiKey = prompt("enter my google api", getCookie(googleApiKeyCookieName));
-		setCookie(googleApiKeyCookieName, googleApiKey);
+		if (googleApiKey.length != 0){
+			setCookie(googleApiKeyCookieName, googleApiKey);
+		}
+		
 		
 		
 		refreshPage();
