@@ -1,62 +1,65 @@
 <!DOCTYPE html>
- <html lang="en"> 
-  <head>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta charset="UTF-8">
     <title>my home page</title>
-    <link rel="stylesheet" type="text/css" href="style.css">
-    <link rel="icon" type="image/x-icon" href="icons/grain_black_24dp.svg">
+    <link rel="stylesheet" type="text/css" href="my%20home%20page_files/style.css">
+    <link rel="icon" type="image/x-icon" href="https://lecovee.github.io/startpage/icons/grain_black_24dp.svg">
     <meta name="theme-color" content="#0019B5">
   </head>
 
 	<!-- https://source.unsplash.com/featured/1920x1080?wallpaper	featured -->
 	<!-- https://source.unsplash.com/collection/1053828/1920x1080	tabliss official collection (https://unsplash.com/collections/1053828/tabliss-official)-->
-  <body onload="onload()" style="background-image: url('https://source.unsplash.com/featured/1920x1080?wallpaper');background-size:cover;margin:0px">
-	<div class="row">
-  		<a class="icon" id="amazon" href="https://smile.amazon.de/video"> <!-- gets changed when desktop usage -->
-    			<img class="image" src="thumbnails/amazon.svg" alt="amazon" style="width:100%">
-			<!-- alt: href="https://smile.amazon.de/-/en/gp/video/storefront/ref=atv_nb_free_to_me?language=en" -->
-  		</a>
+  <body onload="onload()" style="margin: 0px; display: flex">
+  	<div class="backgroundContainer" style="background-image: url('https://source.unsplash.com/featured/1920x1080?wallpaper'); background-size:cover; width: 100%; height: 100%">
+	  		
+		<div class="row">
+	  		<a class="icon" id="amazon" href="https://smile.amazon.de/"> <!-- gets changed when desktop usage -->
+	    			<img class="image" src="my%20home%20page_files/amazon.svg" alt="amazon" style="width:100%">
+				<!-- alt: href="https://smile.amazon.de/-/en/gp/video/storefront/ref=atv_nb_free_to_me?language=en" -->
+	  		</a>
 
-  		<a class="icon" href="https://youtube.com">
-    			<img class="image" src="thumbnails/youtube.svg" alt="youtube" style="width:100%">
-  		</a>
+	  		<a class="icon" href="https://youtube.com/">
+	    			<img class="image" src="my%20home%20page_files/youtube.svg" alt="youtube" style="width:100%">
+	  		</a>
 
-  		<a class="icon" href="https://netflix.com">
-    			<img class="image" src="thumbnails/netflix.svg" alt="netflix" style="width:100%">
-  		</a>
-  				
+	  		<a class="icon" href="https://netflix.com/">
+	    			<img class="image" src="my%20home%20page_files/netflix.svg" alt="netflix" style="width:100%">
+	  		</a>
+	  				
+			
+			<a class="icon" id="tagesschau" href="https://www.youtube.com/embed/videoseries?index=0&amp;list=PL4A2F331EE86DCC22">
+	    			<img class="image" id="tagesschauImage" src="my%20home%20page_files/tagesschauInactive.svg" alt="tagesschau" style="width:100%">
+	  		</a>
 		
-		<a class="icon" id="tagesschau" href="https://www.youtube.com/embed/videoseries?index=0&amp;list=PL4A2F331EE86DCC22">
-    			<img class="image" id="tagesschauImage" src="thumbnails/tagesschauInactive.svg" alt="tagesschau" style="width:100%">
-  		</a>
-	
 
-		<!--
-  		<a class="icon" href="https://www.twitch.tv">
-    			<img class="image" src="thumbnails/twitch.svg" alt="twitch" style="width:100%">
-  		</a>
-		-->
-		
-		<!--
-  		<a class="icon" href="https://www.ardmediathek.de/sendung/kevin-kuehnert-und-die-spd/staffel-1/Y3JpZDovL25kci5kZS80NzI4/1/">
-    			<img class="image" src="thumbnails/miscellaneous.svg" alt="miscellaneous" style="width:100%">
-  		</a>
-		-->
-		
-  		<a class="icon" id="twitch" href="https://www.twitch.tv/noway4u_sir">
-    			<img class="image" src="thumbnails/twitch.svg" alt="twitch" style="width:100%">
-  		</a>
-		
-  		<!--
-		<a class="icon" id="alternative" href="https://www.zdf.de/comedy/zdf-magazin-royale">
-    			<img class="image" src="thumbnails/zdf_magazin.svg" alt="zdf magazin" style="width:100%">
-  		</a>
-		-->
-	</div>
+			<!--
+	  		<a class="icon" href="https://www.twitch.tv">
+	    			<img class="image" src="thumbnails/twitch.svg" alt="twitch" style="width:100%">
+	  		</a>
+			-->
+			
+			<!--
+	  		<a class="icon" href="https://www.ardmediathek.de/sendung/kevin-kuehnert-und-die-spd/staffel-1/Y3JpZDovL25kci5kZS80NzI4/1/">
+	    			<img class="image" src="thumbnails/miscellaneous.svg" alt="miscellaneous" style="width:100%">
+	  		</a>
+			-->
+			
+	  		<a class="icon" id="twitch" href="https://www.twitch.tv/noway4u_sir">
+	    			<img class="image" src="my%20home%20page_files/twitch.svg" alt="twitch" style="width:100%">
+	  		</a>
+			
+	  		<!--
+			<a class="icon" id="alternative" href="https://www.zdf.de/comedy/zdf-magazin-royale">
+	    			<img class="image" src="thumbnails/zdf_magazin.svg" alt="zdf magazin" style="width:100%">
+	  		</a>
+			-->
+		</div>
+  	</div>
     
-    <img class="bottomRightIcon" onclick="onClickSettingsButton()" src="buttons/settings_gray_24dp.svg">
+    <img class="bottomRightIcon" onclick="onClickSettingsButton()" src="my%20home%20page_files/settings_gray_24dp.svg">
 
-  </body>
+  
   <script>
 	// --- constants ---
 	//cookie names
@@ -232,6 +235,7 @@
 		return "";
 	}
   </script>
-  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-</body>
-</html>
+  <script src="my%20home%20page_files/jquery-3.5.1.min.js"></script>
+
+
+</body></html>
