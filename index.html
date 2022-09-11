@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en"><head>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+ <html lang="en"> 
+  <head>
     <meta charset="UTF-8">
     <title>my home page</title>
-    <link rel="stylesheet" type="text/css" href="my%20home%20page_files/style.css">
-    <link rel="icon" type="image/x-icon" href="https://lecovee.github.io/startpage/icons/grain_black_24dp.svg">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="icon" type="image/x-icon" href="icons/grain_black_24dp.svg">
     <meta name="theme-color" content="#0019B5">
   </head>
 
@@ -14,52 +14,271 @@
 	<div class="backgroundContainer" style="background-image: url('https://source.unsplash.com/featured/1920x1080?wallpaper'); background-size:cover; width: 100%; height: 100%">
 	  		
 		<div class="row">
-	  		<a class="icon" id="amazon" href="https://smile.amazon.de/"> <!-- gets changed when desktop usage -->
-	    			<img class="image" src="my%20home%20page_files/amazon.svg" alt="amazon" style="width:100%">
+			<a class="icon" id="amazon" href="https://smile.amazon.de/video"> <!-- gets changed when desktop usage -->
+				<img class="image" src="thumbnails/amazon.svg" alt="amazon" style="width:100%">
 				<!-- alt: href="https://smile.amazon.de/-/en/gp/video/storefront/ref=atv_nb_free_to_me?language=en" -->
-	  		</a>
+			</a>
 
-	  		<a class="icon" href="https://youtube.com/">
-	    			<img class="image" src="my%20home%20page_files/youtube.svg" alt="youtube" style="width:100%">
-	  		</a>
+			<a class="icon" href="https://youtube.com">
+				<img class="image" src="thumbnails/youtube.svg" alt="youtube" style="width:100%">
+			</a>
 
-	  		<a class="icon" href="https://netflix.com/">
-	    			<img class="image" src="my%20home%20page_files/netflix.svg" alt="netflix" style="width:100%">
-	  		</a>
-	  				
-			
+			<a class="icon" href="https://netflix.com">
+				<img class="image" src="thumbnails/netflix.svg" alt="netflix" style="width:100%">
+			</a>
+
+
 			<a class="icon" id="tagesschau" href="https://www.youtube.com/embed/videoseries?index=0&amp;list=PL4A2F331EE86DCC22">
-	    			<img class="image" id="tagesschauImage" src="my%20home%20page_files/tagesschauInactive.svg" alt="tagesschau" style="width:100%">
-	  		</a>
-		
+				<img class="image" id="tagesschauImage" src="thumbnails/tagesschauInactive.svg" alt="tagesschau" style="width:100%">
+			</a>
+
 
 			<!--
-	  		<a class="icon" href="https://www.twitch.tv">
-	    			<img class="image" src="thumbnails/twitch.svg" alt="twitch" style="width:100%">
-	  		</a>
+			<a class="icon" href="https://www.twitch.tv">
+				<img class="image" src="thumbnails/twitch.svg" alt="twitch" style="width:100%">
+			</a>
 			-->
-			
+
 			<!--
-	  		<a class="icon" href="https://www.ardmediathek.de/sendung/kevin-kuehnert-und-die-spd/staffel-1/Y3JpZDovL25kci5kZS80NzI4/1/">
-	    			<img class="image" src="thumbnails/miscellaneous.svg" alt="miscellaneous" style="width:100%">
-	  		</a>
+			<a class="icon" href="https://www.ardmediathek.de/sendung/kevin-kuehnert-und-die-spd/staffel-1/Y3JpZDovL25kci5kZS80NzI4/1/">
+				<img class="image" src="thumbnails/miscellaneous.svg" alt="miscellaneous" style="width:100%">
+			</a>
 			-->
-			
-	  		<a class="icon" id="twitch" href="https://www.twitch.tv/noway4u_sir">
-	    			<img class="image" src="my%20home%20page_files/twitch.svg" alt="twitch" style="width:100%">
-	  		</a>
-			
-	  		<!--
+
+			<a class="icon" id="twitch" href="https://www.twitch.tv/noway4u_sir">
+				<img class="image" src="thumbnails/twitch.svg" alt="twitch" style="width:100%">
+			</a>
+
+			<!--
 			<a class="icon" id="alternative" href="https://www.zdf.de/comedy/zdf-magazin-royale">
-	    			<img class="image" src="thumbnails/zdf_magazin.svg" alt="zdf magazin" style="width:100%">
-	  		</a>
+				<img class="image" src="thumbnails/zdf_magazin.svg" alt="zdf magazin" style="width:100%">
+			</a>
 			-->
 		</div>
-  	</div>
-    
-    <img class="bottomRightIcon" onclick="onClickSettingsButton()" src="my%20home%20page_files/settings_gray_24dp.svg">
+	  </div>
+    <img class="bottomRightIcon" onclick="onClickSettingsButton()" src="buttons/settings_gray_24dp.svg">
 
-  
+  </body>
+  <script>
+	// --- constants ---
+	//cookie names
+	var googleApiKeyCookieName = "googleApiKey";
+	var usageCookieName = "usage";
+	var tagesschauUpdatedTimeCookieName = "tagesschauUpdatedTime";
+	var tagesschauLinkCookieName = "tagesschauLink";
+
+	//variables
+	var usageMedia = 1;
+	var usageDesktop = 0;
+	var usageDefault = usageDesktop;
+	var youtubeCheckTimeOut = 60; // in min
+	var refreshTime = 127;		// in min
+
+	var anyCookieSet = 0;
+
+	//detect firefox
+	if(navigator.userAgent.toLowerCase().indexOf('firefox') > -1){
+     		// firefox macht probleme
+		// wenn ich die site als new tab habe und cookies beim beenden lösche dann löscht es auch die cookies von dieser site
+		// auch wenn sie eigentlich als exceptions drin steht
+		// blöde lösung -> firefox macht nix mit cookies und hat nur standard ansicht
+		console.warn('gibt probleme mit den cookies firefox, teste das mal und schau ob es so geht');
+	}
+
+	//main
+	
+        adjustForUse(getCookie(usageCookieName));
+	
+	
+
+	function onClickSettingsButton(){
+        openSettingsInputs();
+	}
+	
+	function openSettingsInputs(){
+	
+	
+        var usageInput = prompt("enter usage\n"+usageDesktop+"=desktop\n"+usageMedia+"=media\nelse="+usageDefault,getCookie(usageCookieName));
+		setCookie(usageCookieName, usageInput);
+		
+		googleApiKey = prompt("enter my google api", getCookie(googleApiKeyCookieName));
+		if (googleApiKey.length != 0){
+			setCookie(googleApiKeyCookieName, googleApiKey);
+		}
+		
+		
+		
+		refreshPage();
+	}	
+	
+	function onload(){
+		
+		googleApiKey = getCookie(googleApiKeyCookieName)
+		if (googleApiKey.length != 0){
+            tagesschauMain(googleApiKey);
+		}
+		
+		
+		// refresh page after some time
+		setTimeout(refreshPage, refreshTime*60*1000);
+		
+	}
+
+	function refreshPage(){
+		location.reload();
+	}
+
+	function tagesschauMain(googleApiKey){
+		// main function to do the tagesschau stuff
+		// anscheinend geht $ nicht direkt aber über onload gehts
+		// google api key exceeds mögliche lösung check nur höchsten x mal am tag und save last youtube id als cookie
+		
+		let tagesschauUpdateTime = getCookie(tagesschauUpdatedTimeCookieName);
+		let now = new Date().getTime();
+		if (tagesschauUpdateTime.length === 0){
+			// cookie not set -> update
+			updateTagesschauLink(googleApiKey, now);			
+		}
+		else {
+			if (tagesschauUpdateTime < now - youtubeCheckTimeOut*60*1000) {
+				// last youtube check was longer then youtubeCheckTimeOut min ago -> update
+				updateTagesschauLink(googleApiKey, now);				
+			}
+			else {
+				setTagesschauLink(getCookie(tagesschauLinkCookieName));
+			}
+		}	
+	}
+
+	function adjustForUse(usage){
+		if (usage != usageMedia && usage != usageDesktop){
+			usage = usageDefault;			
+		}
+		
+		//if(usage == usageMedia){
+		//	removeElement("whatsapp");	
+		//	return;
+		//}
+		
+		if (usage == usageDesktop){
+		//	removeElement("alternative");
+			document.getElementById("amazon").setAttribute("href","https://smile.amazon.de/");
+		//	return;
+		}			
+	
+	}
+	function removeElement(id) {
+		document.getElementById(id).outerHTML = "";
+	}
+  	function setTagesschauLink(link){
+  		let tagesschauIcon = document.getElementById("tagesschau");
+  		tagesschauIcon.setAttribute("href",link);
+  	}
+	function setTagesschauImageReady(){
+		$(document).ready(function() {
+			document.getElementById("tagesschauImage").src = "thumbnails/tagesschau.svg";
+		});
+	}
+  	function getTagesschauQuery(){
+  		let date = new Date();
+  		date.setDate(date.getDate()-1); 
+  		let dateString = getTwoDigitsValue(date.getDate())+"."+getTwoDigitsValue(date.getMonth()+1)+"."+date.getFullYear();
+  		return "tagesschau+20:00+uhr+"+"\""+dateString+"\"";
+  	}
+  	function getTwoDigitsValue(value){
+  		if (value < 10){
+  			answer = "0"+value;
+  		} else {
+  			answer = value;
+  		}
+  		return answer;
+  	}
+	function updateTagesschauLink(thisGoogleApiKey, timeNow) {
+        if (thisGoogleApiKey.lenth===0){
+            return;
+        }
+		let searchlink = "https://www.googleapis.com/youtube/v3/search?part=snippet";
+		searchlink = searchlink + "&q="+getTagesschauQuery();			// tagesschau 20:00 uhr 02.07.1993
+		searchlink = searchlink + "&channelId=UC5NOEUbkLheQcaaRldYW5GA";	// channel tagesschau
+		searchlink = searchlink + "&key="+thisGoogleApiKey;			// youtube api key
+		console.log("searchlink = " + searchlink)
+		let searchQuery = 
+		$.get(searchlink,function(data){
+			let responseString = JSON.stringify(data);
+			let videoIdPosition = responseString.indexOf("videoId");
+			let videoId = responseString.substring(videoIdPosition+10,videoIdPosition+21);
+	  		let link = "https://www.youtube.com/watch?v="+videoId
+			setTagesschauLink(link);
+			setTagesschauImageReady();
+			setCookie(tagesschauUpdatedTimeCookieName, timeNow);
+			setCookie(tagesschauLinkCookieName, link);
+		});
+	}
+	function setCookie(cookieName, cookieValue) {
+		document.cookie = cookieName + "="+cookieValue+";";
+	}
+	function getCookie(cname) {
+		// from https://www.w3schools.com/js/js_cookies.asp
+		let name = cname + "=";
+		let decodedCookie = decodeURIComponent(document.<!DOCTYPE html>
+ <html lang="en"> 
+  <head>
+    <meta charset="UTF-8">
+    <title>my home page</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="icon" type="image/x-icon" href="icons/grain_black_24dp.svg">
+    <meta name="theme-color" content="#0019B5">
+  </head>
+
+	<!-- https://source.unsplash.com/featured/1920x1080?wallpaper	featured -->
+	<!-- https://source.unsplash.com/collection/1053828/1920x1080	tabliss official collection (https://unsplash.com/collections/1053828/tabliss-official)-->
+  <body onload="onload()" style="background-image: url('https://source.unsplash.com/featured/1920x1080?wallpaper');background-size:cover;margin:0px">
+	<div class="row">
+  		<a class="icon" id="amazon" href="https://smile.amazon.de/video"> <!-- gets changed when desktop usage -->
+    			<img class="image" src="thumbnails/amazon.svg" alt="amazon" style="width:100%">
+			<!-- alt: href="https://smile.amazon.de/-/en/gp/video/storefront/ref=atv_nb_free_to_me?language=en" -->
+  		</a>
+
+  		<a class="icon" href="https://youtube.com">
+    			<img class="image" src="thumbnails/youtube.svg" alt="youtube" style="width:100%">
+  		</a>
+
+  		<a class="icon" href="https://netflix.com">
+    			<img class="image" src="thumbnails/netflix.svg" alt="netflix" style="width:100%">
+  		</a>
+  				
+		
+		<a class="icon" id="tagesschau" href="https://www.youtube.com/embed/videoseries?index=0&amp;list=PL4A2F331EE86DCC22">
+    			<img class="image" id="tagesschauImage" src="thumbnails/tagesschauInactive.svg" alt="tagesschau" style="width:100%">
+  		</a>
+	
+
+		<!--
+  		<a class="icon" href="https://www.twitch.tv">
+    			<img class="image" src="thumbnails/twitch.svg" alt="twitch" style="width:100%">
+  		</a>
+		-->
+		
+		<!--
+  		<a class="icon" href="https://www.ardmediathek.de/sendung/kevin-kuehnert-und-die-spd/staffel-1/Y3JpZDovL25kci5kZS80NzI4/1/">
+    			<img class="image" src="thumbnails/miscellaneous.svg" alt="miscellaneous" style="width:100%">
+  		</a>
+		-->
+		
+  		<a class="icon" id="twitch" href="https://www.twitch.tv/noway4u_sir">
+    			<img class="image" src="thumbnails/twitch.svg" alt="twitch" style="width:100%">
+  		</a>
+		
+  		<!--
+		<a class="icon" id="alternative" href="https://www.zdf.de/comedy/zdf-magazin-royale">
+    			<img class="image" src="thumbnails/zdf_magazin.svg" alt="zdf magazin" style="width:100%">
+  		</a>
+		-->
+	</div>
+    
+    <img class="bottomRightIcon" onclick="onClickSettingsButton()" src="buttons/settings_gray_24dp.svg">
+
+  </body>
   <script>
 	// --- constants ---
 	//cookie names
@@ -235,7 +454,23 @@
 		return "";
 	}
   </script>
-  <script src="my%20home%20page_files/jquery-3.5.1.min.js"></script>
-
-
-</body></html>
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+</body>
+</html>
+cookie);
+		let ca = decodedCookie.split(';');
+		for(let i = 0; i <ca.length; i++) {
+			let c = ca[i];
+			while (c.charAt(0) == ' ') {
+				c = c.substring(1);
+			}
+			if (c.indexOf(name) == 0) {
+				return c.substring(name.length, c.length);
+			}
+		}
+		return "";
+	}
+  </script>
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+</body>
+</html>
