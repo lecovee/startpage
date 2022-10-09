@@ -221,7 +221,10 @@
 		});
 	}
 	function setCookie(cookieName, cookieValue) {
-		document.cookie = cookieName + "="+cookieValue+";";
+		var date = new Date();
+        	date.setTime(date.getTime()+(365*24*60*60*1000));
+        	var expireDate = date.toGMTString();
+		document.cookie = cookieName + "="+cookieValue+"; expires="+expireDate;
 	}
 	function getCookie(cname) {
 		// from https://www.w3schools.com/js/js_cookies.asp
