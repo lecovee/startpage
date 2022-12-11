@@ -9,6 +9,8 @@
   </head>
 	 
   <script src="https://code.jquery.com/jquery-3.6.1.js" type="text/javascript"></script>
+	 	<!-- muss anscheinend vor $ sein damit wenn es genutzt wird geladen ist (https://stackoverflow.com/a/8556006) -->
+	 	<!-- sonst gab es den $ not defined error beschrieben im stackoverflow -->
   <script> <!-- braucht es damit die späteren script functions defined sind -->
   </script>
 
@@ -210,6 +212,7 @@
 		searchlink = searchlink + "&key="+thisGoogleApiKey;			// youtube api key
 		console.log("searchlink = " + searchlink);
 		$(document).ready(function () {
+			<!-- document ready damit das jquery script geladen ist (https://stackoverflow.com/a/2195167) -->
 			let searchQuery = $.get(searchlink,function(data){
 				let responseString = JSON.stringify(data);
 				let videoIdPosition = responseString.indexOf("videoId");
