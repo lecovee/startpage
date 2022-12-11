@@ -207,18 +207,20 @@
 		searchlink = searchlink + "&q="+getTagesschauQuery();			// tagesschau 20:00 uhr 02.07.1993
 		searchlink = searchlink + "&channelId=UC5NOEUbkLheQcaaRldYW5GA";	// channel tagesschau
 		searchlink = searchlink + "&key="+thisGoogleApiKey;			// youtube api key
-		console.log("searchlink = " + searchlink)
-		let searchQuery = 
-		$.get(searchlink,function(data){
-			let responseString = JSON.stringify(data);
-			let videoIdPosition = responseString.indexOf("videoId");
-			let videoId = responseString.substring(videoIdPosition+10,videoIdPosition+21);
-	  		let link = "https://www.youtube.com/watch?v="+videoId
-			setTagesschauLink(link);
-			setTagesschauImageReady();
-			setCookie(tagesschauUpdatedTimeCookieName, timeNow);
-			setCookie(tagesschauLinkCookieName, link);
+		console.log("searchlink = " + searchlink);
+		$(document).ready(function () {
+			let searchQuery = $.get(searchlink,function(data){
+				let responseString = JSON.stringify(data);
+				let videoIdPosition = responseString.indexOf("videoId");
+				let videoId = responseString.substring(videoIdPosition+10,videoIdPosition+21);
+				let link = "https://www.youtube.com/watch?v="+videoId;
+				setTagesschauLink(link);
+				setTagesschauImageReady();
+				setCookie(tagesschauUpdatedTimeCookieName, timeNow);
+				setCookie(tagesschauLinkCookieName, link);
+			});
 		});
+		
 	}
 	function setCookie(cookieName, cookieValue) {
 		var date = new Date();
