@@ -103,10 +103,29 @@
         openSettingsInputs();
 	}
 	
+	  
 	function openSettingsInputs(){
 	
-	
-        var usageInput = prompt("enter usage\n"+usageDesktop+"=desktop\n"+usageMedia+"=media\nelse="+usageDefault,getCookie(usageCookieName));
+		$("#dialog").dialog({
+
+			autoOpen: true,
+			buttons: {
+					"desktop": function() { 
+						usageInput = usageDesktop;
+						$(this).dialog("close"); 
+					},
+					"media": function() { 
+						usageInput = usageMedia;
+						alert("No!"); 
+						$(this).dialog("close"); 
+
+					}
+				},
+			width: "400px"
+
+		});
+
+        	//var usageInput = prompt("enter usage\n"+usageDesktop+"=desktop\n"+usageMedia+"=media\nelse="+usageDefault,getCookie(usageCookieName));
 		setCookie(usageCookieName, usageInput);
 		
 		googleApiKey = prompt("enter my google api", getCookie(googleApiKeyCookieName));
