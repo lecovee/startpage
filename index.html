@@ -188,13 +188,13 @@
 
 	function adjustMisc(){
 		miscUrl = getCookie(miscLinkCookie);
+		console.log("miscUrl"+miscUrl);
 		if(miscUrl.length == 0){
 			removeElement(misc);
 		}
 		else{
 	  		let miscIcon = document.getElementById("misc");
 	  		miscIcon.setAttribute("href",miscUrl);
-			
 		}
 	}
 	
