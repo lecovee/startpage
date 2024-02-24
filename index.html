@@ -47,11 +47,9 @@
 			</a>
 			-->
 
-			<!--
-			<a class="icon" href="https://www.ardmediathek.de/sendung/kevin-kuehnert-und-die-spd/staffel-1/Y3JpZDovL25kci5kZS80NzI4/1/">
+			<a class="icon" id="misc" href="https://www.google.com/">
 				<img class="image" src="thumbnails/miscellaneous.svg" alt="miscellaneous" style="width:100%">
 			</a>
-			-->
 
 			<a class="icon" id="twitch" href="https://www.twitch.tv/noway4u_sir">
 				<img class="image" src="thumbnails/twitch.svg" alt="twitch" style="width:100%">
@@ -98,6 +96,8 @@
         adjustForUse(getCookie(usageCookieName));
         
         adjustYoutubeLink(getCookie(youtubeLinkCookie));
+
+	adjustMisc();
 	
 	
 
@@ -120,6 +120,10 @@
 		if (youtubeLink.length != 0){
 			setCookie(youtubeLinkCookie, youtubeLink);
 		}
+
+		
+		miscLink = prompt("enter youtube linke (nothing = skip)", getCookie(miscLinkCookie));
+		setCookie(miscLinkCookie, miscLink);
 		
 		
 		refreshPage();
@@ -180,6 +184,18 @@
 		//	return;
 		}			
 	
+	}
+
+	function adjustMisc(){
+		miscUrl = getCookie(miscLinkCookie);
+		if(miscUrl.length == 0){
+			removeElement(misc);
+		}
+		else{
+	  		let miscIcon = document.getElementById("misc");
+	  		miscIcon.setAttribute("href",miscUrl);
+			
+		}
 	}
 	
 	function adjustYoutubeLink(link){
