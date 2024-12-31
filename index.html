@@ -75,6 +75,7 @@
 	var tagesschauLinkCookieName = "tagesschauLink";
 	var youtubeLinkCookie = "youtubeLinkCookie";
 	var miscLinkCookie = "miscLinkCookie";
+	var tagesschauDaySuccessfulCookieName = "tagesschauDaySuccessful";
 
 	//variables
 	var usageMedia = 1;
@@ -175,7 +176,7 @@
 				updateTagesschauLink(googleApiKey, now);				
 			}
 			else {
-				setTagesschauLink(getCookie(tagesschauLinkCookieName));
+				updateTagesschauResults();
 			}
 		}	
 	}
@@ -223,54 +224,99 @@
 	function removeElement(id) {
 		document.getElementById(id).outerHTML = "";
 	}
-  	function setTagesschauLink(link){
-		console.log("setting tagesschau link to "+link);
-  		let tagesschauIcon = document.getElementById("tagesschau");
-  		tagesschauIcon.setAttribute("href",link);
-  	}
-	function setTagesschauImageReady(){
+	function setTagesschauLink(link){
+	console.log("setting tagesschau link to "+link);
+		let tagesschauIcon = document.getElementById("tagesschau");
+		tagesschauIcon.setAttribute("href",link);
+	}
+	function setTagesschauImageToday(){
 		$(document).ready(function() {
-			document.getElementById("tagesschauImage").src = "thumbnails/tagesschau.svg";
+			document.getElementById("tagesschauImage").src = "thumbnails/tagesschauToday.svg";
 		});
 	}
-  	function getTagesschauQuery(){
-  		let date = new Date();
-  		date.setDate(date.getDate()-1); 
-  		let dateString = getTwoDigitsValue(date.getDate())+"."+getTwoDigitsValue(date.getMonth()+1)+"."+date.getFullYear();
-  		return "tagesschau+20:00+uhr+"+"\""+dateString+"\"";
-  	}
-  	function getTwoDigitsValue(value){
-  		if (value < 10){
-  			answer = "0"+value;
-  		} else {
-  			answer = value;
-  		}
-  		return answer;
-  	}
-	function updateTagesschauLink(thisGoogleApiKey, timeNow) {
-        if (thisGoogleApiKey.length===0){
-            return;
-        }
+	function setTagesschauImageYesterday(){
+		$(document).ready(function() {
+			document.getElementById("tagesschauImage").src = "thumbnails/tagesschauYesterday.svg";
+		});
+	}
+	function getTagesschauQuery(daysOffset){    // daysOffset = 0 >> today, daysOffset = -1 >> yesterday
+		let date = new Date();
+		date.setDate(date.getDate()+daysOffset); 
+		let dateString = getTwoDigitsValue(date.getDate())+"."+getTwoDigitsValue(date.getMonth()+1)+"."+date.getFullYear();
+		return "tagesschau+20:00+uhr+"+"\""+dateString+"\"";
+	}
+	function getTagesschauSearchLink(daysOffset){    // daysOffset = 0 >> today, daysOffset = -1 >> yesterday
 		let searchlink = "https://www.googleapis.com/youtube/v3/search?part=snippet";
-		searchlink = searchlink + "&q="+getTagesschauQuery();			// tagesschau 20:00 uhr 02.07.1993
-		searchlink = searchlink + "&channelId=UC5NOEUbkLheQcaaRldYW5GA";	// channel tagesschau
-		searchlink = searchlink + "&key="+thisGoogleApiKey;			// youtube api key
+	  searchlink = searchlink + "&q="+getTagesschauQuery(daysOffset);			// tagesschau 20:00 uhr 02.07.1993
+	  searchlink = searchlink + "&channelId=UC5NOEUbkLheQcaaRldYW5GA";	// channel tagesschau
+	  searchlink = searchlink + "&key="+thisGoogleApiKey;			// youtube api key
+	  console.log("searchlink = " + searchlink);
+	  return searchlink;
+	}
+	function getTwoDigitsValue(value){
+		if (value < 10){
+			answer = "0"+value;
+		} else {
+			answer = value;
+		}
+		return answer;
+	}
+	function updateTagesschauLink(thisGoogleApiKey, timeNow) {
+    if (thisGoogleApiKey.length===0){
+        return;
+    }
+		let searchlink = getTagesschauSearchLink(0);
 		console.log("searchlink = " + searchlink);
 		$(document).ready(function () {
 			<!-- document ready damit das jquery script geladen ist (https://stackoverflow.com/a/2195167) -->
-			let searchQuery = $.get(searchlink,function(data){
-				let responseString = JSON.stringify(data);
-				let videoIdPosition = responseString.indexOf("videoId");
-				let videoId = responseString.substring(videoIdPosition+10,videoIdPosition+21);
-				let link = "https://www.youtube.com/watch?v="+videoId;
-				setTagesschauLink(link);
-				setTagesschauImageReady();
-				setCookie(tagesschauUpdatedTimeCookieName, timeNow);
-				setCookie(tagesschauLinkCookieName, link);
+			let searchQuery = $.get(searchlink,function(data, status, xhr){   // https://www.w3schools.com/jquery/ajax_get.asp  // failed includes "totalResults":0
+			  let responseString = JSON.stringify(data);
+			  console.log("get request\n\tstatus:\n\t\t" + status+"\n\tdata string:\n\t\t"+responseString);
+        if (responseString.indexOf('"totalResults":0')<0){    // total results != 0 >> video found >> handle stuff
+          console.log("tagesschau found video of today");
+				  let videoIdPosition = responseString.indexOf("videoId");
+				  let videoId = responseString.substring(videoIdPosition+10,videoIdPosition+21);
+				  let link = "https://www.youtube.com/watch?v="+videoId;
+				  setCookie(tagesschauLinkCookieName, link);
+				  setCookie(tagesschauDaySuccessfulCookieName, 0);
+				  setCookie(tagesschauUpdatedTimeCookieName, timeNow);
+        }
+        else {
+          console.log("tagesschau did not find video of today");
+          let searchlink = getTagesschauSearchLink(-1);
+		      console.log("searchlink = " + searchlink);
+		      let searchQuery = $.get(searchlink,function(data, status, xhr){   // https://www.w3schools.com/jquery/ajax_get.asp  // failed includes "totalResults":0
+			      let responseString = JSON.stringify(data);
+			      console.log("get request\n\tstatus:\n\t\t" + status+"\n\tdata string:\n\t\t"+responseString);
+            if (responseString.indexOf('"totalResults":0')<0){    // total results != 0 >> video found >> handle stuff
+              console.log("tagesschau found video of yesterday");
+				      let videoIdPosition = responseString.indexOf("videoId");
+				      let videoId = responseString.substring(videoIdPosition+10,videoIdPosition+21);
+				      let link = "https://www.youtube.com/watch?v="+videoId;
+				      setCookie(tagesschauLinkCookieName, link);
+				      setCookie(tagesschauDaySuccessfulCookieName, -1);
+				      setCookie(tagesschauUpdatedTimeCookieName, timeNow);
+            }
+            else {
+              console.log("tagesschau did not find video of today nor yesterday");              
+            }
+        }
 			});
 		});
-		
 	}
+	
+	function updateTagesschauResults() {   // adjusts everything to the results of the cookies
+	  if (getCookie(tagesschauDaySuccessfulCookieName)==0) {
+				setTagesschauLink(getCookie(tagesschauLinkCookieName, link));
+				setTagesschauImageToday();
+	  }
+	  if (getCookie(tagesschauDaySuccessfulCookieName)==-1) {
+				setTagesschauLink(getCookie(tagesschauLinkCookieName, link));
+				setTagesschauImageYesterday();
+	  }
+	}
+	
+	
 	function setCookie(cookieName, cookieValue) {
 		var date = new Date();
         	date.setTime(date.getTime()+(365*24*60*60*1000));
