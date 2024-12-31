@@ -225,7 +225,7 @@
 		document.getElementById(id).outerHTML = "";
 	}
 	function setTagesschauLink(link){
-	console.log("setting tagesschau link to "+link);
+		console.log("setting tagesschau link to "+link);
 		let tagesschauIcon = document.getElementById("tagesschau");
 		tagesschauIcon.setAttribute("href",link);
 	}
@@ -247,11 +247,11 @@
 	}
 	function getTagesschauSearchLink(thisGoogleApiKey, daysOffset){    // daysOffset = 0 >> today, daysOffset = -1 >> yesterday
 		let searchlink = "https://www.googleapis.com/youtube/v3/search?part=snippet";
-	  searchlink = searchlink + "&q="+getTagesschauQuery(daysOffset);			// tagesschau 20:00 uhr 02.07.1993
-	  searchlink = searchlink + "&channelId=UC5NOEUbkLheQcaaRldYW5GA";	// channel tagesschau
-	  searchlink = searchlink + "&key="+thisGoogleApiKey;			// youtube api key
-	  console.log("searchlink = " + searchlink);
-	  return searchlink;
+		searchlink = searchlink + "&q="+getTagesschauQuery(daysOffset);			// tagesschau 20:00 uhr 02.07.1993
+		searchlink = searchlink + "&channelId=UC5NOEUbkLheQcaaRldYW5GA";	// channel tagesschau
+		searchlink = searchlink + "&key="+thisGoogleApiKey;			// youtube api key
+		console.log("searchlink = " + searchlink);
+		return searchlink;
 	}
 	function getTwoDigitsValue(value){
 		if (value < 10){
@@ -310,11 +310,11 @@
 			return;
 		}
 		else{
-			if (getCookie(tagesschauDaySuccessfulCookieName)==0) {
+			if (getCookie(tagesschauDaySuccessfulCookieName)===0) {
 					setTagesschauLink(getCookie(tagesschauLinkCookieName));
 					setTagesschauImageToday();
 			}
-			if (getCookie(tagesschauDaySuccessfulCookieName)==-1) {
+			if (getCookie(tagesschauDaySuccessfulCookieName)===-1) {
 					setTagesschauLink(getCookie(tagesschauLinkCookieName));
 					setTagesschauImageYesterday();
 			}
