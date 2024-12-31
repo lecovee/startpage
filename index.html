@@ -266,7 +266,6 @@
 			return;
 		}
 		let searchlink = getTagesschauSearchLink(thisGoogleApiKey, 0);
-		console.log("searchlink = " + searchlink);
 		$(document).ready(function () {
 			<!-- document ready damit das jquery script geladen ist (https://stackoverflow.com/a/2195167) -->
 			$.get(searchlink,function(data, status, xhr){   // https://www.w3schools.com/jquery/ajax_get.asp  // failed includes "totalResults":0
@@ -312,11 +311,11 @@
 		}
 		else{
 			if (getCookie(tagesschauDaySuccessfulCookieName)==0) {
-					setTagesschauLink(getCookie(tagesschauLinkCookieName, link));
+					setTagesschauLink(getCookie(tagesschauLinkCookieName));
 					setTagesschauImageToday();
 			}
 			if (getCookie(tagesschauDaySuccessfulCookieName)==-1) {
-					setTagesschauLink(getCookie(tagesschauLinkCookieName, link));
+					setTagesschauLink(getCookie(tagesschauLinkCookieName));
 					setTagesschauImageYesterday();
 			}
 		}
