@@ -307,14 +307,19 @@
 	}
 	
 	function updateTagesschauResults() {   // adjusts everything to the results of the cookies
-	  if (getCookie(tagesschauDaySuccessfulCookieName)==0) {
-				setTagesschauLink(getCookie(tagesschauLinkCookieName, link));
-				setTagesschauImageToday();
-	  }
-	  if (getCookie(tagesschauDaySuccessfulCookieName)==-1) {
-				setTagesschauLink(getCookie(tagesschauLinkCookieName, link));
-				setTagesschauImageYesterday();
-	  }
+		if (getCookie(tagesschauLinkCookieName, link).length===0){
+			return;
+		}
+		else{
+			if (getCookie(tagesschauDaySuccessfulCookieName)==0) {
+					setTagesschauLink(getCookie(tagesschauLinkCookieName, link));
+					setTagesschauImageToday();
+			}
+			if (getCookie(tagesschauDaySuccessfulCookieName)==-1) {
+					setTagesschauLink(getCookie(tagesschauLinkCookieName, link));
+					setTagesschauImageYesterday();
+			}
+		}
 	}
 	
 	
