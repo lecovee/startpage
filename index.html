@@ -312,11 +312,11 @@
 		}
 		else{
 			console.log(getCookie(tagesschauDaySuccessfulCookieName));
-			if (getCookie(tagesschauDaySuccessfulCookieName)===0) {
+			if (getCookie(tagesschauDaySuccessfulCookieName)==0) {
 					setTagesschauLink(getCookie(tagesschauLinkCookieName));
 					setTagesschauImageToday();
 			}
-			if (getCookie(tagesschauDaySuccessfulCookieName)===-1) {
+			if (getCookie(tagesschauDaySuccessfulCookieName)==-1) {
 					setTagesschauLink(getCookie(tagesschauLinkCookieName));
 					setTagesschauImageYesterday();
 			}
