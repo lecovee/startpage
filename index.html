@@ -245,7 +245,7 @@
 		let dateString = getTwoDigitsValue(date.getDate())+"."+getTwoDigitsValue(date.getMonth()+1)+"."+date.getFullYear();
 		return "tagesschau+20:00+uhr+"+"\""+dateString+"\"";
 	}
-	function getTagesschauSearchLink(daysOffset){    // daysOffset = 0 >> today, daysOffset = -1 >> yesterday
+	function getTagesschauSearchLink(thisGoogleApiKey, daysOffset){    // daysOffset = 0 >> today, daysOffset = -1 >> yesterday
 		let searchlink = "https://www.googleapis.com/youtube/v3/search?part=snippet";
 	  searchlink = searchlink + "&q="+getTagesschauQuery(daysOffset);			// tagesschau 20:00 uhr 02.07.1993
 	  searchlink = searchlink + "&channelId=UC5NOEUbkLheQcaaRldYW5GA";	// channel tagesschau
@@ -265,7 +265,7 @@
 		if (thisGoogleApiKey.length===0){
 			return;
 		}
-		let searchlink = getTagesschauSearchLink(0);
+		let searchlink = getTagesschauSearchLink(thisGoogleApiKey, 0);
 		console.log("searchlink = " + searchlink);
 		$(document).ready(function () {
 			<!-- document ready damit das jquery script geladen ist (https://stackoverflow.com/a/2195167) -->
@@ -283,7 +283,7 @@
 				}
 				else {
 					console.log("tagesschau did not find video of today");
-					let searchlink = getTagesschauSearchLink(-1);
+					let searchlink = getTagesschauSearchLink(thisGoogleApiKey, -1);
 					console.log("searchlink = " + searchlink);
 					$.get(searchlink,function(data, status, xhr){   // https://www.w3schools.com/jquery/ajax_get.asp  // failed includes "totalResults":0
 						let responseString = JSON.stringify(data);
