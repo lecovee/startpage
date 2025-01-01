@@ -85,6 +85,7 @@
 	var refreshTime = 127;		// in min
 
 	var anyCookieSet = 0;
+	var firstTagesschauLoad = true	// to refresh picture on first load but not loop infinitely
 
 	//detect firefox
 	if(navigator.userAgent.toLowerCase().indexOf('firefox') > -1){
@@ -144,15 +145,16 @@
 	}	
 	
 	function tagesschauLoad(){
-		//console.log('tagesschauLoad()');
+		console.log('tagesschauLoad()');
 		googleApiKey = getCookie(googleApiKeyCookieName)
 		if (googleApiKey.length != 0){
-            tagesschauMain(googleApiKey);
+            		tagesschauMain(googleApiKey);
 		}
 		
 		
 		// refresh page after some time
 		setTimeout(refreshPage, refreshTime*60*1000);
+		tagesschauLoad = function(){};	// make it so that this function does not do anything. otherwise it would change the picturej
 		
 	}
 
@@ -177,7 +179,9 @@
 				updateTagesschauLink(googleApiKey, now);				
 			}
 			else {
-				updateTagesschauResults();
+				if (firstTagesschauLoad) {
+					updateTagesschauResults();
+				}
 			}
 		}	
 	}
@@ -280,6 +284,7 @@
 					setCookie(tagesschauLinkCookieName, link);
 					setCookie(tagesschauDaySuccessfulCookieName, 0);
 					setCookie(tagesschauUpdatedTimeCookieName, timeNow);
+					updateTagesschauResults();
 				}
 				else {
 					console.log("tagesschau did not find video of today");
@@ -296,6 +301,7 @@
 							setCookie(tagesschauLinkCookieName, link);
 							setCookie(tagesschauDaySuccessfulCookieName, -1);
 							setCookie(tagesschauUpdatedTimeCookieName, timeNow);
+							updateTagesschauResults();
 						}
 						else {
 							console.log("tagesschau did not find video of today nor yesterday");              	
@@ -307,6 +313,7 @@
 	}
 	
 	function updateTagesschauResults() {   // adjusts everything to the results of the cookies
+		firstTagesschauLoad = false;
 		if (getCookie(tagesschauDaySuccessfulCookieName).length===0){
 			return;
 		}
