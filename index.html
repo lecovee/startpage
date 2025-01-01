@@ -96,7 +96,7 @@
 		// auch wenn sie eigentlich als exceptions drin steht
 		// blöde lösung -> firefox macht nix mit cookies und hat nur standard ansicht
 		// firefox macht keine probleme mehr
-			// console.warn('gibt probleme mit den cookies firefox, teste das mal und schau ob es so geht');
+		// console.warn('gibt probleme mit den cookies firefox, teste das mal und schau ob es so geht');
 	}
 
 	//main
@@ -233,8 +233,7 @@
 		
 		if(usage == usageMedia){
 		//	removeElement("whatsapp");
-			document.getElementById("position1").setAttribute("href","https://www.youtube.com/embed/videoseries?index=0&amp;list=PLC69C8C26628D947C");
-			
+			updateTagesthemenResults();
 		}
 		
 		if (usage == usageDesktop){
@@ -281,6 +280,11 @@
 	function setTagesthemenImageToday(){
 		$(document).ready(function() {
 			document.getElementById("position1Image").src = "thumbnails/tagesthemenToday.svg";
+		});
+	}
+	function setTagesthemenImageBase(){
+		$(document).ready(function() {
+			document.getElementById("position1Image").src = "thumbnails/tagesthemenBase.svg";
 		});
 	}
 	function setTagesschauImageToday(){
@@ -415,6 +419,10 @@
 		if (tagesthemenLink.length!==0){
 			setTagesthemenLink(getCookie(tagesschauLinkCookieName));
 			setTagesthemenImageToday();
+		}
+		else {
+			setTagesthemenLink("https://www.youtube.com/embed/videoseries?index=0&amp;list=PLC69C8C26628D947C");
+			setTagesthemenImageBase();
 		}
 	}
 	  
