@@ -24,42 +24,41 @@
 	<div class="backgroundContainer" id="backgroundContainer" style="background-image: url('https://source.unsplash.com/featured/1920x1080?wallpaper'); background-size:cover; width: 100%; height: 100%">
 	  		
 		<div class="row">
-			<a class="icon" id="amazon" href="https://smile.amazon.de/video"> <!-- gets changed when desktop usage -->
-				<img class="image" src="thumbnails/amazon.svg" alt="amazon" style="width:100%">
-				<!-- alt: href="https://smile.amazon.de/-/en/gp/video/storefront/ref=atv_nb_free_to_me?language=en" -->
+			<a class="icon" id="position1" href="https://www.overleaf.com/">	 <!-- gets changed when desktop usage -->
+				<img class="image" onload="position1Load()" id="position1Image" src="thumbnails/overleaf.svg" alt="overleaf/tagesthemen">
 			</a>
 
 			<a class="icon" id="youtube"  href="https://youtube.com">
-				<img class="image" src="thumbnails/youtube.svg" alt="youtube" style="width:100%">
+				<img class="image" src="thumbnails/youtube.svg" alt="youtube">
 			</a>
 
 			<a class="icon" href="https://netflix.com">
-				<img class="image" src="thumbnails/netflix.svg" alt="netflix" style="width:100%">
+				<img class="image" src="thumbnails/netflix.svg" alt="netflix">
 			</a>
 
 
 			<a class="icon" id="tagesschau" href="https://www.youtube.com/embed/videoseries?index=0&amp;list=PL4A2F331EE86DCC22">
-				<img class="image" onload="tagesschauLoad()" id="tagesschauImage" src="thumbnails/tagesschauInactive.svg" alt="tagesschau" style="width:100%">
+				<img class="image" onload="tagesschauLoad()" id="tagesschauImage" src="thumbnails/tagesschauBase.svg" alt="tagesschau">
 			</a>
 
 
 			<!--
 			<a class="icon" href="https://www.twitch.tv">
-				<img class="image" src="thumbnails/twitch.svg" alt="twitch" style="width:100%">
+				<img class="image" src="thumbnails/twitch.svg" alt="twitch">
 			</a>
 			-->
 
 			<a class="icon" id="misc" href="https://www.google.com/">
-				<img class="image" src="thumbnails/miscellaneous.svg" alt="miscellaneous" style="width:100%">
+				<img class="image" src="thumbnails/miscellaneous.svg" alt="miscellaneous">
 			</a>
 
 			<a class="icon" id="twitch" href="https://www.twitch.tv/noway4u_sir">
-				<img class="image" src="thumbnails/twitch.svg" alt="twitch" style="width:100%">
+				<img class="image" src="thumbnails/twitch.svg" alt="twitch">
 			</a>
 
 			<!--
 			<a class="icon" id="alternative" href="https://www.zdf.de/comedy/zdf-magazin-royale">
-				<img class="image" src="thumbnails/zdf_magazin.svg" alt="zdf magazin" style="width:100%">
+				<img class="image" src="thumbnails/zdf_magazin.svg" alt="zdf magazin">
 			</a>
 			-->
 		</div>
@@ -72,9 +71,12 @@
 	var googleApiKeyCookieName = "googleApiKey";
 	var usageCookieName = "usage";
 	var tagesschauUpdatedTimeCookieName = "tagesschauUpdatedTime";
+	var tagesthemenUpdatedTimeCookieName = "tagesthemenUpdatedTime";
 	var tagesschauLinkCookieName = "tagesschauLink";
+	var tagesthemenLinkCookieName = "tagesthemenLink";
 	var youtubeLinkCookie = "youtubeLinkCookie";
 	var miscLinkCookie = "miscLinkCookie";
+	var tagesschauDaySuccessfulCookieName = "tagesschauDaySuccessful";
 
 	//variables
 	var usageMedia = 1;
@@ -84,6 +86,8 @@
 	var refreshTime = 127;		// in min
 
 	var anyCookieSet = 0;
+	var firstTagesschauLoad = true	// to refresh picture on first load but not loop infinitely
+	var firstTagesthemenLoad = true	// to refresh picture on first load but not loop infinitely
 
 	//detect firefox
 	if(navigator.userAgent.toLowerCase().indexOf('firefox') > -1){
@@ -91,7 +95,8 @@
 		// wenn ich die site als new tab habe und cookies beim beenden lösche dann löscht es auch die cookies von dieser site
 		// auch wenn sie eigentlich als exceptions drin steht
 		// blöde lösung -> firefox macht nix mit cookies und hat nur standard ansicht
-		console.warn('gibt probleme mit den cookies firefox, teste das mal und schau ob es so geht');
+		// firefox macht keine probleme mehr
+		// console.warn('gibt probleme mit den cookies firefox, teste das mal und schau ob es so geht');
 	}
 
 	//main
@@ -114,7 +119,7 @@
 	
 	
 	function onClickSettingsButton(){
-        openSettingsInputs();
+        	openSettingsInputs();
 	}
 	
 	var usageInput;
@@ -145,17 +150,56 @@
 		//console.log('tagesschauLoad()');
 		googleApiKey = getCookie(googleApiKeyCookieName)
 		if (googleApiKey.length != 0){
-            tagesschauMain(googleApiKey);
+            		tagesschauMain(googleApiKey);
 		}
 		
 		
 		// refresh page after some time
 		setTimeout(refreshPage, refreshTime*60*1000);
+		tagesschauLoad = function(){};	// make it so that this function does not do anything. otherwise it would change the picturej
+		
+	}
+
+	function position1Load(){
+		//console.log('position1Load()');
+		let usage = getCookie(usageCookieName);
+		if(usage == usageMedia){
+			googleApiKey = getCookie(googleApiKeyCookieName)
+			if (googleApiKey.length != 0){
+	            		tagesthemenMain(googleApiKey);
+			}
+		}
 		
 	}
 
 	function refreshPage(){
 		location.reload();
+	}
+
+	  
+
+	function tagesthemenMain(googleApiKey){
+		// main function to do the tagesschau stuff
+		// anscheinend geht $ nicht direkt aber über onload gehts
+		// google api key exceeds mögliche lösung check nur höchsten x mal am tag und save last youtube id als cookie
+		
+		let tagesthemenUpdateTime = getCookie(tagesthemenUpdatedTimeCookieName);
+		let now = new Date().getTime();
+		if (tagesthemenUpdateTime.length === 0){
+			// cookie not set -> update
+			updateTagesthemenLink(googleApiKey, now);
+		}
+		else {
+			if (tagesthemenUpdateTime < now - youtubeCheckTimeOut*60*1000) {
+				// last youtube check was longer then youtubeCheckTimeOut min ago -> update
+				updateTagesthemenLink(googleApiKey, now);			
+			}
+			else {
+				if (firstTagesthemenLoad) {
+					updateTagesthemenResults();
+				}
+			}
+		}	
 	}
 
 	function tagesschauMain(googleApiKey){
@@ -175,7 +219,9 @@
 				updateTagesschauLink(googleApiKey, now);				
 			}
 			else {
-				setTagesschauLink(getCookie(tagesschauLinkCookieName));
+				if (firstTagesschauLoad) {
+					updateTagesschauResults();
+				}
 			}
 		}	
 	}
@@ -185,22 +231,20 @@
 			usage = usageDefault;			
 		}
 		
-		//if(usage == usageMedia){
-		//	removeElement("whatsapp");	
-		//	return;
-		//}
+		if(usage == usageMedia){
+		//	removeElement("whatsapp");
+			updateTagesthemenResults();
+		}
 		
 		if (usage == usageDesktop){
 		//	removeElement("alternative");
-			document.getElementById("amazon").setAttribute("href","https://smile.amazon.de/");
-		//	return;
 		}			
 	
 	}
 
 	function adjustMisc(){
 		miscUrl = getCookie(miscLinkCookie);
-		console.log("miscUrl"+miscUrl);
+		//console.log("miscUrl"+miscUrl);
 		if(miscUrl.length == 0){
 			removeElement("misc");
 		}
@@ -217,60 +261,189 @@
 	  		youtubeIcon.setAttribute("href",link);
 		}
 		else {
-			console.log("youtube link empty");
+			console.log("leaving default youtube link https://youtube.com unchanged");
 		}
   	}
 	function removeElement(id) {
 		document.getElementById(id).outerHTML = "";
 	}
-  	function setTagesschauLink(link){
+	function setTagesthemenLink(link){
+		console.log("setting tagesthemen link to "+link);
+		let tagesthemenIcon = document.getElementById("position1");
+		tagesthemenIcon.setAttribute("href",link);
+	}
+	function setTagesschauLink(link){
 		console.log("setting tagesschau link to "+link);
-  		let tagesschauIcon = document.getElementById("tagesschau");
-  		tagesschauIcon.setAttribute("href",link);
-  	}
-	function setTagesschauImageReady(){
+		let tagesschauIcon = document.getElementById("tagesschau");
+		tagesschauIcon.setAttribute("href",link);
+	}
+	function setTagesthemenImageToday(){
 		$(document).ready(function() {
-			document.getElementById("tagesschauImage").src = "thumbnails/tagesschau.svg";
+			document.getElementById("position1Image").src = "thumbnails/tagesthemenToday.svg";
 		});
 	}
-  	function getTagesschauQuery(){
-  		let date = new Date();
-  		date.setDate(date.getDate()-1); 
-  		let dateString = getTwoDigitsValue(date.getDate())+"."+getTwoDigitsValue(date.getMonth()+1)+"."+date.getFullYear();
-  		return "tagesschau+20:00+uhr+"+"\""+dateString+"\"";
-  	}
-  	function getTwoDigitsValue(value){
-  		if (value < 10){
-  			answer = "0"+value;
-  		} else {
-  			answer = value;
-  		}
-  		return answer;
-  	}
-	function updateTagesschauLink(thisGoogleApiKey, timeNow) {
-        if (thisGoogleApiKey.length===0){
-            return;
-        }
+	function setTagesthemenImageBase(){
+		$(document).ready(function() {
+			document.getElementById("position1Image").src = "thumbnails/tagesthemenBase.svg";
+		});
+	}
+	function setTagesschauImageToday(){
+		$(document).ready(function() {
+			document.getElementById("tagesschauImage").src = "thumbnails/tagesschauToday.svg";
+		});
+	}
+	function setTagesschauImageYesterday(){
+		$(document).ready(function() {
+			document.getElementById("tagesschauImage").src = "thumbnails/tagesschauYesterday.svg";
+		});
+	}
+	function getTagesthemenQuery(){
+		let date = new Date();
+		date.setDate(date.getDate()); 
+		let dateString = getTwoDigitsValue(date.getDate())+"."+getTwoDigitsValue(date.getMonth()+1)+"."+date.getFullYear();
+		return "tagesthemen+"+"\""+dateString+"\"";
+	}
+	  
+	function getTagesthemenSearchLink(thisGoogleApiKey){
+		let date = new Date();
+		if(date.getHours()<5){	// still night >> get the one of yesterday
+			date.setDate(date.getDate()-1);
+		}			
+		let queryString = getTwoDigitsValue(date.getDate())+"."+getTwoDigitsValue(date.getMonth()+1)+"."+date.getFullYear();
+		queryString = "tagesthemen+"+"\""+queryString+"\"";
+		
 		let searchlink = "https://www.googleapis.com/youtube/v3/search?part=snippet";
-		searchlink = searchlink + "&q="+getTagesschauQuery();			// tagesschau 20:00 uhr 02.07.1993
+		searchlink = searchlink + "&q="+queryString;			// tagesthemen 02.07.1993
 		searchlink = searchlink + "&channelId=UC5NOEUbkLheQcaaRldYW5GA";	// channel tagesschau
 		searchlink = searchlink + "&key="+thisGoogleApiKey;			// youtube api key
 		console.log("searchlink = " + searchlink);
+		return searchlink;
+	}
+	function getTagesschauQuery(daysOffset){    // daysOffset = 0 >> today, daysOffset = -1 >> yesterday
+		let date = new Date();
+		date.setDate(date.getDate()+daysOffset); 
+		let dateString = getTwoDigitsValue(date.getDate())+"."+getTwoDigitsValue(date.getMonth()+1)+"."+date.getFullYear();
+		return "tagesschau+20:00+uhr+"+"\""+dateString+"\"";
+	}
+	function getTagesschauSearchLink(thisGoogleApiKey, daysOffset){    // daysOffset = 0 >> today, daysOffset = -1 >> yesterday
+		let searchlink = "https://www.googleapis.com/youtube/v3/search?part=snippet";
+		searchlink = searchlink + "&q="+getTagesschauQuery(daysOffset);			// tagesschau 20:00 uhr 02.07.1993
+		searchlink = searchlink + "&channelId=UC5NOEUbkLheQcaaRldYW5GA";	// channel tagesschau
+		searchlink = searchlink + "&key="+thisGoogleApiKey;			// youtube api key
+		console.log("searchlink = " + searchlink);
+		return searchlink;
+	}
+	function getTwoDigitsValue(value){
+		if (value < 10){
+			answer = "0"+value;
+		} else {
+			answer = value;
+		}
+		return answer;
+	}
+	  
+	function updateTagesthemenLink(thisGoogleApiKey, timeNow) {
+		setCookie(tagesthemenUpdatedTimeCookieName, timeNow);
+		if (thisGoogleApiKey.length===0){
+			return;
+		}
+		let searchlink = getTagesthemenSearchLink(thisGoogleApiKey);
 		$(document).ready(function () {
 			<!-- document ready damit das jquery script geladen ist (https://stackoverflow.com/a/2195167) -->
-			let searchQuery = $.get(searchlink,function(data){
+			$.get(searchlink,function(data, status, xhr){   // https://www.w3schools.com/jquery/ajax_get.asp  // failed includes "totalResults":0
 				let responseString = JSON.stringify(data);
-				let videoIdPosition = responseString.indexOf("videoId");
-				let videoId = responseString.substring(videoIdPosition+10,videoIdPosition+21);
-				let link = "https://www.youtube.com/watch?v="+videoId;
-				setTagesschauLink(link);
-				setTagesschauImageReady();
-				setCookie(tagesschauUpdatedTimeCookieName, timeNow);
-				setCookie(tagesschauLinkCookieName, link);
+				console.log("get request\n\tstatus:\n\t\t" + status+"\n\tdata string:\n\t\t"+responseString);
+				if (responseString.indexOf('"totalResults":0')<0){    // total results != 0 >> video found >> handle stuff
+					console.log("found tagesthemen video of today");
+					let videoIdPosition = responseString.indexOf("videoId");
+					let videoId = responseString.substring(videoIdPosition+10,videoIdPosition+21);
+					let link = "https://www.youtube.com/watch?v="+videoId;
+					setCookie(tagesthemenLinkCookieName, link);
+					updateTagesthemenResults();
+				}
+				else {
+					console.log("did not find tagesthemen video of today");
+				}						
 			});
 		});
-		
 	}
+	
+	function updateTagesschauLink(thisGoogleApiKey, timeNow) {
+		setCookie(tagesschauUpdatedTimeCookieName, timeNow);
+		if (thisGoogleApiKey.length===0){
+			return;
+		}
+		let searchlink = getTagesschauSearchLink(thisGoogleApiKey, 0);
+		$(document).ready(function () {
+			<!-- document ready damit das jquery script geladen ist (https://stackoverflow.com/a/2195167) -->
+			$.get(searchlink,function(data, status, xhr){   // https://www.w3schools.com/jquery/ajax_get.asp  // failed includes "totalResults":0
+				let responseString = JSON.stringify(data);
+				console.log("get request\n\tstatus:\n\t\t" + status+"\n\tdata string:\n\t\t"+responseString);
+				if (responseString.indexOf('"totalResults":0')<0){    // total results != 0 >> video found >> handle stuff
+					console.log("found tagesschau video of today");
+					let videoIdPosition = responseString.indexOf("videoId");
+					let videoId = responseString.substring(videoIdPosition+10,videoIdPosition+21);
+					let link = "https://www.youtube.com/watch?v="+videoId;
+					setCookie(tagesschauLinkCookieName, link);
+					setCookie(tagesschauDaySuccessfulCookieName, 0);
+					updateTagesschauResults();
+				}
+				else {
+					console.log("did not find tagesschau video of today");
+					let searchlink = getTagesschauSearchLink(thisGoogleApiKey, -1);
+					$.get(searchlink,function(data, status, xhr){   // https://www.w3schools.com/jquery/ajax_get.asp  // failed includes "totalResults":0
+						let responseString = JSON.stringify(data);
+						console.log("get request\n\tstatus:\n\t\t" + status+"\n\tdata string:\n\t\t"+responseString);
+						if (responseString.indexOf('"totalResults":0')<0){    // total results != 0 >> video found >> handle stuff
+							console.log("tagesschau found video of yesterday");
+							let videoIdPosition = responseString.indexOf("videoId");
+							let videoId = responseString.substring(videoIdPosition+10,videoIdPosition+21);
+							let link = "https://www.youtube.com/watch?v="+videoId;
+							setCookie(tagesschauLinkCookieName, link);
+							setCookie(tagesschauDaySuccessfulCookieName, -1);
+							updateTagesschauResults();
+						}
+						else {
+							console.log("did not find tagesschau video of today nor yesterday");              	
+						}
+					});
+				}						
+			});
+		});
+	}
+	
+	function updateTagesthemenResults() {   // adjusts everything to the results of the cookies
+		firstTagesthemenLoad = false;
+		let tagesthemenLink = getCookie(tagesthemenLinkCookieName);
+		if (tagesthemenLink.length!==0){
+			setTagesthemenLink(tagesthemenLink);
+			setTagesthemenImageToday();
+		}
+		else {
+			setTagesthemenLink("https://www.youtube.com/embed/videoseries?index=0&amp;list=PLC69C8C26628D947C");
+			setTagesthemenImageBase();
+		}
+	}
+	  
+	function updateTagesschauResults() {   // adjusts everything to the results of the cookies
+		firstTagesschauLoad = false;
+		if (getCookie(tagesschauDaySuccessfulCookieName).length===0){
+			return;
+		}
+		else{
+			console.log("tagesschau video available for day "+getCookie(tagesschauDaySuccessfulCookieName));
+			if (getCookie(tagesschauDaySuccessfulCookieName)==0) {
+					setTagesschauLink(getCookie(tagesschauLinkCookieName));
+					setTagesschauImageToday();
+			}
+			if (getCookie(tagesschauDaySuccessfulCookieName)==-1) {
+					setTagesschauLink(getCookie(tagesschauLinkCookieName));
+					setTagesschauImageYesterday();
+			}
+		}
+	}
+	
+	
 	function setCookie(cookieName, cookieValue) {
 		var date = new Date();
         	date.setTime(date.getTime()+(365*24*60*60*1000));
