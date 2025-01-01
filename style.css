@@ -23,6 +23,7 @@ html{
 	border-radius: 2.5%;
 	opacity: 0.25;
 	transition: opacity ease 1s;
+	width: 100%;
 }
 
 .image:hover {
