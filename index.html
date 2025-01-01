@@ -187,12 +187,12 @@
 		let now = new Date().getTime();
 		if (tagesthemenUpdateTime.length === 0){
 			// cookie not set -> update
-			updateTagesthemenLink(googleApiKey, now);			
+			updateTagesthemenLink(googleApiKey, now);
 		}
 		else {
 			if (tagesthemenUpdateTime < now - youtubeCheckTimeOut*60*1000) {
 				// last youtube check was longer then youtubeCheckTimeOut min ago -> update
-				updateTagesthemenLink(googleApiKey, now);				
+				updateTagesthemenLink(googleApiKey, now);			
 			}
 			else {
 				if (firstTagesthemenLoad) {
@@ -343,6 +343,7 @@
 	}
 	  
 	function updateTagesthemenLink(thisGoogleApiKey, timeNow) {
+		setCookie(tagesthemenUpdatedTimeCookieName, timeNow);
 		if (thisGoogleApiKey.length===0){
 			return;
 		}
@@ -358,7 +359,6 @@
 					let videoId = responseString.substring(videoIdPosition+10,videoIdPosition+21);
 					let link = "https://www.youtube.com/watch?v="+videoId;
 					setCookie(tagesthemenLinkCookieName, link);
-					setCookie(tagesthemenUpdatedTimeCookieName, timeNow);
 					updateTagesthemenResults();
 				}
 				else {
@@ -369,6 +369,7 @@
 	}
 	
 	function updateTagesschauLink(thisGoogleApiKey, timeNow) {
+		setCookie(tagesschauUpdatedTimeCookieName, timeNow);
 		if (thisGoogleApiKey.length===0){
 			return;
 		}
@@ -385,7 +386,6 @@
 					let link = "https://www.youtube.com/watch?v="+videoId;
 					setCookie(tagesschauLinkCookieName, link);
 					setCookie(tagesschauDaySuccessfulCookieName, 0);
-					setCookie(tagesschauUpdatedTimeCookieName, timeNow);
 					updateTagesschauResults();
 				}
 				else {
@@ -401,7 +401,6 @@
 							let link = "https://www.youtube.com/watch?v="+videoId;
 							setCookie(tagesschauLinkCookieName, link);
 							setCookie(tagesschauDaySuccessfulCookieName, -1);
-							setCookie(tagesschauUpdatedTimeCookieName, timeNow);
 							updateTagesschauResults();
 						}
 						else {
