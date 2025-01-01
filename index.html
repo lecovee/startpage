@@ -162,6 +162,7 @@
 
 	function position1Load(){
 		console.log('position1Load()');
+		let usage = getCookie(usageCookieName);
 		if(usage == usageMedia){
 			googleApiKey = getCookie(googleApiKeyCookieName)
 			if (googleApiKey.length != 0){
