@@ -310,7 +310,7 @@
 			date.setDate(date.getDate()-1);
 		}			
 		let queryString = getTwoDigitsValue(date.getDate())+"."+getTwoDigitsValue(date.getMonth()+1)+"."+date.getFullYear();
-		queryString = "tagesthemen+"+"\""+queryString+"\"";
+		queryString = "\"tagesthemen\"+"+"\""+queryString+"\"";
 		
 		let searchlink = "https://www.googleapis.com/youtube/v3/search?part=snippet";
 		searchlink = searchlink + "&q="+queryString;			// tagesthemen 02.07.1993
@@ -341,6 +341,27 @@
 		}
 		return answer;
 	}
+
+	function videoIdFromAPIresultByTextInTitle(searchString, resultString){
+		let stringArray = resultString.split("youtube#searchResult");		// split resultString into different videos
+		let beginTitleIdentifier='","title":"';					// title beginning identifier 
+		let endTitleIdentifier='","description":"';				// title end identifier
+		let beginIDidentifier='","videoId":"';					// id beginning identifier
+		let endIDidentifier='"},"snippet":';					// id end identifier
+		for (let result of stringArray) {					
+			let titleBeg = result.search(beginTitleIdentifier) + beginTitleIdentifier.length;
+			let titleEnd = result.search(endTitleIdentifier);
+			let title = result.substring(titleBeg,titleEnd);
+			if (title.search(searchString)>-1){
+				let idBeg = result.search(beginIDidentifier) + beginIDidentifier.length;
+				let idEnd = result.search(endIDidentifier);
+				if(idBeg + 11 == idEnd){
+					return result.substring(idBeg,idEnd);
+				}
+			}
+		}
+		return "";
+	}
 	  
 	function updateTagesthemenLink(thisGoogleApiKey, timeNow) {
 		setCookie(tagesthemenUpdatedTimeCookieName, timeNow);
@@ -353,10 +374,9 @@
 			$.get(searchlink,function(data, status, xhr){   // https://www.w3schools.com/jquery/ajax_get.asp  // failed includes "totalResults":0
 				let responseString = JSON.stringify(data);
 				console.log("get request\n\tstatus:\n\t\t" + status+"\n\tdata string:\n\t\t"+responseString);
-				if (responseString.indexOf('"totalResults":0')<0){    // total results != 0 >> video found >> handle stuff
+				let videoId = videoIdFromAPIresultByTextInTitle("agesthemen",responseString);
+				if (videoId.length>0){
 					console.log("found tagesthemen video of today");
-					let videoIdPosition = responseString.indexOf("videoId");
-					let videoId = responseString.substring(videoIdPosition+10,videoIdPosition+21);
 					let link = "https://www.youtube.com/watch?v="+videoId;
 					setCookie(tagesthemenLinkCookieName, link);
 					updateTagesthemenResults();
@@ -378,12 +398,11 @@
 			<!-- document ready damit das jquery script geladen ist (https://stackoverflow.com/a/2195167) -->
 			$.get(searchlink,function(data, status, xhr){   // https://www.w3schools.com/jquery/ajax_get.asp  // failed includes "totalResults":0
 				let responseString = JSON.stringify(data);
-				console.log("get request\n\tstatus:\n\t\t" + status+"\n\tdata string:\n\t\t"+responseString);
-				if (responseString.indexOf('"totalResults":0')<0){    // total results != 0 >> video found >> handle stuff
-					console.log("found tagesschau video of today");
-					let videoIdPosition = responseString.indexOf("videoId");
-					let videoId = responseString.substring(videoIdPosition+10,videoIdPosition+21);
+				console.log("get request\n\tstatus:\n\t\t" + status+"\n\tdata string:\n\t\t"+responseString);;
+				let videoId = videoIdFromAPIresultByTextInTitle("agesschau",responseString);
+				if (videoId.length>0){	// >> video found >> handle stuff
 					let link = "https://www.youtube.com/watch?v="+videoId;
+					console.log("found tagesschau video of today ("+link+")");
 					setCookie(tagesschauLinkCookieName, link);
 					setCookie(tagesschauDaySuccessfulCookieName, 0);
 					updateTagesschauResults();
@@ -393,12 +412,11 @@
 					let searchlink = getTagesschauSearchLink(thisGoogleApiKey, -1);
 					$.get(searchlink,function(data, status, xhr){   // https://www.w3schools.com/jquery/ajax_get.asp  // failed includes "totalResults":0
 						let responseString = JSON.stringify(data);
-						console.log("get request\n\tstatus:\n\t\t" + status+"\n\tdata string:\n\t\t"+responseString);
-						if (responseString.indexOf('"totalResults":0')<0){    // total results != 0 >> video found >> handle stuff
-							console.log("tagesschau found video of yesterday");
-							let videoIdPosition = responseString.indexOf("videoId");
-							let videoId = responseString.substring(videoIdPosition+10,videoIdPosition+21);
+						console.log("get request\n\tstatus:\n\t\t" + status+"\n\tdata string:\n\t\t"+responseString);;
+						let videoId = videoIdFromAPIresultByTextInTitle("agesschau",responseString);
+						if (videoId.length>0){	// >> video found >> handle stuff
 							let link = "https://www.youtube.com/watch?v="+videoId;
+							console.log("found tagesschau video of yesterday ("+link+")");
 							setCookie(tagesschauLinkCookieName, link);
 							setCookie(tagesschauDaySuccessfulCookieName, -1);
 							updateTagesschauResults();
