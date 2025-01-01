@@ -415,9 +415,9 @@
 	
 	function updateTagesthemenResults() {   // adjusts everything to the results of the cookies
 		firstTagesthemenLoad = false;
-		let tagesthemenLink = getCookie(tagesthemenLinkCookie);
+		let tagesthemenLink = getCookie(tagesschauLinkCookieName);
 		if (tagesthemenLink.length!==0){
-			setTagesthemenLink(getCookie(tagesschauLinkCookieName));
+			setTagesthemenLink(tagesthemenLink);
 			setTagesthemenImageToday();
 		}
 		else {
