@@ -407,7 +407,7 @@
 			return;
 		}
 		let dayOffset = 0;
-		let searchlink = getTagesschauSearchLink(thisGoogleApiKey, 0);
+		let searchlink = getTagesschauSearchLink(thisGoogleApiKey, dayOffset);
 		$(document).ready(function () {
 			<!-- document ready damit das jquery script geladen ist (https://stackoverflow.com/a/2195167) -->
 			$.get(searchlink,function(data, status, xhr){   // https://www.w3schools.com/jquery/ajax_get.asp  // failed includes "totalResults":0
